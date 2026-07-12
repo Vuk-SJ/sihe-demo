@@ -1,0 +1,1399 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>四合院 · 链接每一个四院人</title>
+<style>
+/* =========================================================
+   四合院 demo · 现代化重构 (小红书/抖音风 · 全新渐变配色)
+   主色:紫粉渐变(violet→pink) · AI:暖橙 · 官方:金
+   ========================================================= */
+:root{
+  --green:#7B61FF;          /* 品牌主色(紫) */
+  --green-2:#5B3FE0;        /* 深紫 */
+  --green-soft:#EDE7FF;     /* 浅紫底 */
+  --copper:#FF7A3D;         /* 暖橙(AI) */
+  --copper-soft:#FFEEDD;
+  --gold:#FFB020;           /* 金 */
+  --gold-soft:#FFF3D6;
+  --ink:#1A1726;
+  --ink-2:#6B6675;
+  --ink-3:#9A95A6;
+  --bg:#F5F4FA;
+  --card:#FFFFFF;
+  --line:#EFEDF3;
+  --grad:linear-gradient(135deg,#7B61FF 0%,#FF5E9C 100%);
+  --grad-soft:linear-gradient(135deg,#8A5CFF,#FF7AB0);
+  --grad-copper:linear-gradient(135deg,#FF9D4D 0%,#FF5E9C 100%);
+  --grad-gold:linear-gradient(135deg,#FFC24B,#FF9D3D);
+  --sh:0 8px 24px rgba(48,28,90,.08);
+  --sh-sm:0 3px 12px rgba(48,28,90,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:#ECEAF3;color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+body{display:flex;justify-content:center;min-height:100vh}
+.frame{width:100%;max-width:430px;background:var(--bg);position:relative;min-height:100vh;
+  box-shadow:0 0 50px rgba(40,20,80,.12);padding-bottom:80px;overflow-x:hidden}
+
+/* 页面切换 */
+.page{display:none}
+.page.on{display:block;animation:pin .3s cubic-bezier(.2,.8,.3,1)}
+@keyframes pin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* 顶部 */
+.top{position:sticky;top:0;z-index:30;background:#fff;padding:10px 14px 0;
+  box-shadow:0 1px 0 var(--line),0 6px 18px rgba(40,20,80,.04)}
+.statusbar{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--ink-2);padding:2px 4px 8px}
+.searchbar{display:flex;align-items:center;gap:8px;background:#F4F2F8;border:1px solid #ECEAF1;
+  border-radius:999px;padding:9px 14px;font-size:13px;color:var(--ink-3);cursor:pointer;transition:.2s}
+.searchbar:active{background:#EDEAF5}
+.searchbar .ask{margin-left:auto;font-weight:800;white-space:nowrap;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;font-size:12.5px;padding:6px 14px;border-radius:999px;background:#fff;
+  border:1px solid var(--line);color:var(--ink-2);cursor:pointer;user-select:none;transition:.18s;box-shadow:var(--sh-sm)}
+.chip.on{background:var(--grad);border-color:transparent;color:#fff;font-weight:700;box-shadow:0 4px 12px rgba(123,97,255,.3)}
+
+/* 瀑布流 */
+.feed{column-count:2;column-gap:12px;padding:4px 14px 20px}
+.ptr{text-align:center;font-size:12px;color:var(--ink-3);padding:10px 0 4px;cursor:pointer;user-select:none}
+.ptr.on{color:var(--green);font-weight:700}
+.loadmore{text-align:center;font-size:12px;color:var(--ink-3);padding:14px 0 4px;cursor:pointer;user-select:none}
+.loadmore.on{color:var(--green);font-weight:700}
+.flw{font-style:normal;font-size:10px;margin-left:6px;color:var(--gold);background:var(--gold-soft);padding:2px 7px;border-radius:8px;cursor:pointer;font-weight:700}
+.cm{font-size:10.5px;color:var(--ink-3);margin-top:4px}
+.cm-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.cm-tag{font-size:10px;background:var(--green-soft);color:var(--green-2);padding:2px 8px;border-radius:999px;font-weight:600}
+.cal{margin-left:6px;border:1.5px solid var(--copper);background:#fff;color:var(--copper);font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer;transition:.15s}
+.cal:active{transform:scale(.94)}
+.post{break-inside:avoid;background:var(--card);border-radius:18px;overflow:hidden;margin-bottom:12px;
+  border:none;cursor:pointer;transition:transform .18s,box-shadow .18s;box-shadow:var(--sh)}
+.post:active{transform:scale(.97);box-shadow:var(--sh-sm)}
+.post .cov{display:flex;align-items:center;justify-content:center;color:#fff;position:relative}
+.post .cov .em{filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+.post.gf{box-shadow:0 8px 24px rgba(255,178,32,.25)}
+.post .gf-badge{position:absolute;top:9px;left:9px;background:var(--grad-gold);color:#fff;font-size:9.5px;
+  font-weight:800;padding:3px 9px;border-radius:999px;letter-spacing:.05em;box-shadow:0 2px 6px rgba(255,160,40,.35)}
+.post .tt{font-size:13.5px;font-weight:700;line-height:1.45;padding:10px 11px 4px}
+.post .mt{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--ink-3);padding:2px 11px 11px}
+.post .mt .au{display:flex;align-items:center;gap:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.post .mt .av{font-size:13px}
+.post .lk{flex:0 0 auto;cursor:pointer}
+.post .lk.did{color:#FF3B6B;font-weight:700}
+
+/* 悬浮 AI 球 */
+.fab{position:fixed;bottom:102px;z-index:40;width:56px;height:56px;border-radius:50%;
+  background:var(--grad-copper);color:#fff;border:none;font-size:26px;
+  box-shadow:0 8px 22px rgba(255,122,61,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:transform .2s}
+.fab:active{transform:scale(.9)}
+.fab::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(255,122,61,.4);
+  animation:fabPulse 2s ease-out infinite}
+@keyframes fabPulse{0%{transform:scale(.9);opacity:.7}100%{transform:scale(1.25);opacity:0}}
+.fab .tip{position:absolute;right:64px;top:50%;transform:translateY(-50%);background:var(--ink);color:#fff;
+  font-size:11px;padding:5px 11px;border-radius:10px;white-space:nowrap;opacity:0;pointer-events:none;transition:.3s;font-weight:600}
+.fab.hint .tip{opacity:1}
+
+/* 底部 Tab */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:50;
+  background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-evenly;
+  padding:8px 10px 12px;box-shadow:0 -4px 20px rgba(40,20,80,.06)}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink-3);font-size:10.5px;
+  cursor:pointer;user-select:none;transition:.15s}
+.tab .i{font-size:21px;line-height:1.1;transition:.15s;filter:grayscale(.3)}
+.tab.on{color:var(--green);font-weight:700}
+.tab.on .i{filter:none;transform:translateY(-1px)}
+.tab .plus{width:48px;height:32px;background:var(--grad);color:#fff;
+  border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;
+  box-shadow:0 6px 16px rgba(123,97,255,.4);margin-top:-3px;transition:.15s}
+.tab .plus:active{transform:scale(.92)}
+
+/* 通用块 */
+.pad{padding:14px}
+.hero-mini{background:var(--grad);color:#fff;border-radius:22px;
+  padding:20px;margin:0 14px 14px;position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(123,97,255,.28)}
+.hero-mini::after{content:"";position:absolute;top:-70px;right:-50px;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%)}
+.hero-mini h2{font-size:20px;margin-bottom:5px;letter-spacing:.01em}
+.hero-mini p{font-size:12.5px;opacity:.94;line-height:1.55}
+.sec{padding:6px 14px 4px}
+.sec-t{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;margin:16px 0 11px}
+.sec-t::before{content:"";width:5px;height:17px;border-radius:3px;background:var(--grad)}
+.sec-t .sub{font-size:11px;font-weight:500;color:var(--ink-3);margin-left:auto}
+.cardx{background:var(--card);border:1px solid #F1EFF6;border-radius:16px;padding:15px 16px;margin-bottom:11px;box-shadow:var(--sh-sm)}
+.cardx h4{font-size:14.5px;margin-bottom:5px;line-height:1.4}
+.cardx p{font-size:12.5px;color:var(--ink-2);line-height:1.55}
+.tagx{display:inline-block;font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;
+  background:var(--green-soft);color:var(--green-2);margin-bottom:7px;letter-spacing:.02em}
+.tagx.cu{background:var(--copper-soft);color:var(--copper)}
+.tagx.gd{background:var(--gold-soft);color:var(--gold)}
+
+/* 时光专列 */
+.tl{list-style:none;border-left:2.5px solid var(--green-soft);margin:6px 0 6px 10px}
+.tl li{position:relative;padding:0 0 16px 22px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.tl li::before{content:"";position:absolute;left:-9px;top:5px;width:12px;height:12px;border-radius:50%;
+  background:var(--card);border:3px solid var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.tl li b{color:var(--green-2);margin-right:6px;font-variant-numeric:tabular-nums}
+.tl li .hl{color:var(--ink);font-weight:700}
+
+/* 词典 */
+.danmu{display:flex;flex-direction:column;gap:8px;overflow:hidden;height:120px;background:linear-gradient(135deg,#F3EEFF,#FFEFF6);border:1px solid #F1EAF8;border-radius:16px;padding:10px 0}
+.dm-lane{overflow:hidden;white-space:nowrap}
+.dm-track{display:inline-flex;gap:10px;padding-left:12px;will-change:transform;animation:dmScroll linear infinite}
+.danmu:hover .dm-track{animation-play-state:paused}
+@keyframes dmScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.wd{background:#fff;border:1px solid #F1EAF8;border-radius:999px;padding:7px 15px;font-size:13px;
+  font-weight:700;cursor:pointer;transition:.15s;box-shadow:var(--sh-sm)}
+.wd:active{transform:scale(.94);background:var(--green-soft)}
+.wd .q{color:var(--copper);font-size:11px;margin-left:3px;font-weight:800}
+
+/* 技能地图 */
+.jobs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.job{background:var(--card);border:1px solid #F1EFF6;border-radius:14px;padding:14px;font-size:13.5px;
+  font-weight:800;text-align:center;cursor:pointer;box-shadow:var(--sh-sm);transition:.15s}
+.job small{display:block;font-weight:500;font-size:10.5px;color:var(--ink-3);margin-top:3px}
+.job:active{transform:scale(.97);background:var(--green-soft)}
+
+/* 找搭子 */
+.bud-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px}
+.bud-cat{background:var(--card);border:1px solid #F1EFF6;border-radius:14px;padding:12px 4px;text-align:center;
+  font-size:11.5px;cursor:pointer;box-shadow:var(--sh-sm);transition:.15s}
+.bud-cat .i{font-size:24px;display:block;margin-bottom:4px}
+.bud-cat:active{transform:scale(.96);background:var(--green-soft)}
+.match-btn{width:100%;border:none;border-radius:15px;padding:14px;font-size:14.5px;font-weight:800;color:#fff;
+  background:var(--grad-copper);cursor:pointer;margin:6px 0 12px;
+  box-shadow:0 8px 20px rgba(255,94,156,.3)}
+.match-btn:active{transform:scale(.98)}
+.mate{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid #F1EFF6;
+  border-radius:15px;padding:13px 14px;margin-bottom:9px;animation:pin .3s cubic-bezier(.2,.8,.3,1) both;box-shadow:var(--sh-sm)}
+.mate .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#F0E9FF,#FFE7F2);display:flex;align-items:center;
+  justify-content:center;font-size:23px;flex-shrink:0}
+.mate .inf{flex:1;min-width:0}
+.mate .nm{font-size:14px;font-weight:800}
+.mate .ds{font-size:11.5px;color:var(--ink-3)}
+.mate .pc{font-size:16px;font-weight:800;color:var(--copper);font-variant-numeric:tabular-nums;
+  background:var(--copper-soft);padding:3px 9px;border-radius:999px}
+.act{background:var(--card);border:1px solid #F1EFF6;border-radius:15px;padding:13px 15px;margin-bottom:9px;
+  display:flex;align-items:center;gap:10px;box-shadow:var(--sh-sm)}
+.act .inf{flex:1}
+.act .nm{font-size:13.5px;font-weight:800}
+.act .ds{font-size:11px;color:var(--ink-3)}
+.act button{border:1.5px solid var(--green);background:#fff;color:var(--green);font-size:12px;
+  font-weight:800;padding:6px 14px;border-radius:999px;cursor:pointer;transition:.15s}
+.act button.did{background:var(--green);color:#fff}
+.act .cal{margin-left:0}
+
+/* 找搭子 子标签(分段控件) */
+.btabs{display:flex;gap:6px;padding:8px 14px 4px}
+.btab{position:relative;flex:1;text-align:center;padding:9px 2px;font-size:15px;font-weight:800;color:var(--ink-3);cursor:pointer;
+  background:#fff;border:1px solid #F1EFF6;border-radius:12px;transition:.18s;box-shadow:var(--sh-sm)}
+.btab.on{color:#fff;background:var(--grad);border-color:transparent;box-shadow:0 4px 12px rgba(123,97,255,.3)}
+.btab.on::after{display:none}
+.goods-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;padding:4px 0 6px}
+.good{background:var(--card);border:1px solid #F1EFF6;border-radius:15px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh-sm)}
+.g-cover{height:92px;display:flex;align-items:center;justify-content:center;font-size:42px;
+  background:linear-gradient(135deg,#F0E9FF,#FFEFF6)}
+.g-body{padding:9px 11px 11px;display:flex;flex-direction:column;gap:3px}
+.g-tt{font-size:13px;font-weight:800;line-height:1.3;color:var(--ink)}
+.g-price{color:var(--green);font-weight:800;font-size:14.5px}
+.g-owner{font-size:11px;color:var(--ink-3)}
+.g-ds{font-size:11px;color:var(--ink-2);line-height:1.45}
+.g-want{margin-top:7px;background:var(--grad);color:#fff;border:none;border-radius:10px;padding:8px;font-size:12px;font-weight:800;cursor:pointer;transition:.15s}
+.g-want:active{transform:scale(.96)}
+
+/* 车票页 */
+/* ===== 车票样式（双联票）===== */
+.ticket{margin:8px 8px 12px;background:linear-gradient(135deg,#7B61FF 0%,#FF5E9C 100%);
+  border-radius:18px;color:#fff;position:relative;overflow:hidden;
+  box-shadow:0 12px 30px rgba(123,97,255,.3);
+  display:flex;align-items:stretch;padding:0;flex-wrap:nowrap}
+.ticket::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 88% 12%,rgba(255,255,255,.18),transparent 45%);pointer-events:none}
+/* 撕开分割线：虚线 */
+.tk-divider{width:0;border-left:2px dashed rgba(255,255,255,.55);
+  margin:14px 0;position:relative;flex-shrink:0}
+.tk-divider::before,.tk-divider::after{content:"";position:absolute;left:-9px;width:18px;height:18px;
+  background:var(--bg);border-radius:50%}
+.tk-divider::before{top:-9px}
+.tk-divider::after{bottom:-9px}
+/* 左侧：持票人 */
+.tk-left{flex:0 0 78px;padding:12px 2px 10px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0}
+.tk-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#fff 0%,#E5DEF8 100%);
+  display:flex;align-items:center;justify-content:center;font-size:22px;color:#7B61FF;
+  box-shadow:0 4px 14px rgba(0,0,0,.18),inset 0 0 0 3px rgba(255,255,255,.7);
+  position:relative;overflow:hidden}
+.tk-avatar::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.5),transparent 50%)}
+.tk-name{font-size:12px;font-weight:800;letter-spacing:.2px;text-align:center;line-height:1.2;text-shadow:0 1px 2px rgba(0,0,0,.12);white-space:nowrap}
+.tk-dept{font-size:9px;opacity:.92;text-align:center;font-weight:500;white-space:nowrap}
+/* 右侧：路线 + 车次信息 */
+.tk-right{flex:1 1 0;min-width:0;padding:8px 8px 6px 6px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.tk-route{display:flex;justify-content:space-between;align-items:center;font-size:24px;font-weight:800;position:relative;line-height:1.1;gap:4px;min-width:0}
+.tk-route small{display:block;font-size:8.5px;font-weight:500;opacity:.85;margin-top:1px;white-space:nowrap}
+.tk-train{flex:0 0 auto;font-size:20px;color:#FFE38A;filter:drop-shadow(0 1px 1px rgba(0,0,0,.15))}
+.tk-from,.tk-to{text-align:center;min-width:0;flex:1 1 0;overflow:hidden;font-size:24px}
+.tk-line-sep{flex:1;height:0;border-top:2px dashed rgba(255,255,255,.5);margin:0 3px;align-self:center;margin-bottom:4px}
+.tk-info{display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font-size:9.5px;position:relative;
+  font-variant-numeric:tabular-nums;margin-top:3px;min-width:0}
+.tk-info .tk-row{display:flex;align-items:baseline;gap:3px;min-width:0;line-height:1.15;flex-wrap:nowrap;white-space:nowrap}
+.tk-info .tk-row span{flex:0 0 auto;opacity:.85;font-size:9px;white-space:nowrap}
+.tk-info .tk-row b{font-weight:700;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;max-width:100%}
+.tk-bar{margin-top:3px;display:flex;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
+.tk-barcode{height:18px;flex:0 0 25%;background:repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 3px,#fff 3px 4px,transparent 4px 6px);
+  border-radius:2px;opacity:.95;mix-blend-mode:screen;min-width:0}
+.tk-no{font-size:9.5px;font-weight:700;letter-spacing:.5px;opacity:.95;white-space:nowrap;flex-shrink:0}inear-gradient(90deg,#fff 0 1px,transparent 1px 3px,#fff 3px 4px,transparent 4px 6px);
+  border-radius:2px;opacity:.95;mix-blend-mode:screen;min-width:0}
+.tk-no{font-size:10px;font-weight:700;letter-spacing:.5px;opacity:.95;white-space:nowrap;flex-shrink:0}.tk-meta b{display:block;font-size:20px}
+.menu{margin:0 14px}
+.mi{background:var(--card);border:1px solid #F1EFF6;border-radius:15px;padding:14px 16px;margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;box-shadow:var(--sh-sm);transition:.15s}
+.mi:active{background:#F7F5FC;transform:scale(.99)}
+.mi .arr{margin-left:auto;color:var(--ink-3);font-size:16px}
+.mi .bdg{margin-left:auto;font-size:11px;background:var(--grad-gold);color:#fff;font-weight:800;
+  padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(255,160,40,.3)}
+
+/* 覆盖层(聊天/详情/发布/海报) */
+.ovl{position:fixed;inset:0;z-index:100;display:none;justify-content:center;background:rgba(20,12,40,.5);
+  opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
+.ovl.show{display:flex;opacity:1}
+.sheet{width:100%;max-width:430px;background:var(--bg);align-self:flex-end;border-radius:24px 24px 0 0;
+  max-height:92vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.2,.9,.3,1);
+  box-shadow:0 -10px 40px rgba(20,12,40,.2);position:relative;overflow:hidden}
+.ovl.show .sheet{transform:none}
+.sheet::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:38px;height:4px;border-radius:3px;background:#E0DBEC;z-index:2}
+.sheet-h{display:flex;align-items:center;gap:10px;padding:18px 18px 14px;border-bottom:1px solid var(--line);
+  font-size:16px;font-weight:800;flex-shrink:0}
+.sheet-h .x{margin-left:auto;width:30px;height:30px;border-radius:50%;border:none;background:#F0EDF6;
+  font-size:14px;cursor:pointer;color:var(--ink-2);transition:.15s}
+.sheet-h .x:active{background:#E6E1F0}
+.sheet-b{overflow-y:auto;flex:1;padding-top:2px}
+
+/* 聊天 */
+.chat-b{padding:16px;display:flex;flex-direction:column;gap:11px;min-height:300px}
+.bub{max-width:82%;padding:10px 14px;border-radius:16px;font-size:13.5px;line-height:1.6;white-space:pre-wrap;box-shadow:var(--sh-sm)}
+.bub.u{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:5px}
+.bub.a{align-self:flex-start;background:#fff;border:1px solid #F1EFF6;border-bottom-left-radius:5px}
+.bub.a .ref{display:block;margin-top:7px;padding-top:6px;border-top:1px dashed var(--line);
+  font-size:11px;color:var(--green);font-weight:600}
+.bub.a .src{display:block;margin-top:5px;font-size:10.5px;color:var(--ink-3);line-height:1.4}
+.bub.a .src a{color:var(--copper);text-decoration:none;font-weight:600}
+.bub.typing{color:var(--ink-3);font-size:12px}
+.hint-q{font-size:11px;color:var(--ink-3);padding:2px 16px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.hint-q span{color:var(--green);font-weight:700}
+.hint-q button{font-size:11px;background:var(--green-soft);color:var(--green-2);border:none;border-radius:999px;padding:4px 12px;cursor:pointer;font-weight:700}
+.qs{display:flex;gap:7px;flex-wrap:wrap;padding:0 16px 10px}
+.q{font-size:12px;background:var(--copper-soft);color:var(--copper);border:none;border-radius:999px;
+  padding:6px 13px;cursor:pointer;font-weight:700;transition:.15s}
+.q:active{transform:scale(.95)}
+.chat-in{display:flex;gap:8px;padding:11px 14px;border-top:1px solid var(--line);background:#fff;flex-shrink:0}
+.chat-in input{flex:1;border:1px solid var(--line);border-radius:999px;padding:10px 16px;font-size:14px;
+  outline:none;background:var(--bg);transition:.15s}
+.chat-in input:focus{border-color:var(--green);background:#fff}
+.chat-in button{border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:800;
+  padding:0 20px;border-radius:999px;cursor:pointer;transition:.15s}
+.chat-in button:active{transform:scale(.96)}
+
+/* 详情 */
+.det-cov{height:200px;display:flex;align-items:center;justify-content:center;font-size:68px;color:#fff;position:relative}
+.det-b{padding:18px 18px 26px}
+.det-b h2{font-size:18.5px;line-height:1.4;margin-bottom:9px}
+.det-au{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-3);margin-bottom:13px}
+.det-au .lk2{margin-left:auto;cursor:pointer;font-size:13px}
+.det-au .lk2.did{color:#FF3B6B;font-weight:700}
+.det-b .bd p{font-size:14px;color:var(--ink-2);margin-bottom:11px;line-height:1.6}
+.det-tags{display:flex;gap:6px;flex-wrap:wrap;margin:11px 0 15px}
+.det-tags span{font-size:11.5px;color:var(--green);background:var(--green-soft);padding:4px 11px;border-radius:999px;font-weight:600}
+.sum-btn{width:100%;border:1.5px dashed var(--copper);background:var(--copper-soft);color:var(--copper);
+  font-size:13.5px;font-weight:800;padding:12px;border-radius:13px;cursor:pointer;transition:.15s}
+.sum-btn:active{transform:scale(.98)}
+.sum-box{background:var(--copper-soft);border-radius:13px;padding:13px 15px;font-size:13px;color:var(--ink);
+  margin-top:11px;display:none;animation:pin .3s cubic-bezier(.2,.8,.3,1)}
+.sum-box.show{display:block}
+.sum-box b{color:var(--copper)}
+
+/* 发布 */
+.pub-b{padding:18px 18px 24px}
+.pub-b label{display:block;font-size:12.5px;font-weight:800;color:var(--ink-2);margin:13px 0 7px}
+.pub-b input[type=text],.pub-b textarea{width:100%;border:1px solid var(--line);border-radius:13px;
+  padding:11px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:.15s}
+.pub-b textarea{min-height:88px;resize:none}
+.pub-b input:focus,.pub-b textarea:focus{border-color:var(--green);background:#fff}
+.em-pick{display:flex;gap:8px;flex-wrap:wrap}
+.em-pick .e{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;
+  font-size:25px;cursor:pointer;color:#fff;border:2.5px solid transparent;transition:.15s}
+.em-pick .e.on{border-color:var(--ink);transform:scale(1.06)}
+.ch-pick{display:flex;gap:7px;flex-wrap:wrap}
+.ch-pick .c{font-size:12.5px;padding:6px 14px;border-radius:999px;background:#fff;
+  border:1px solid var(--line);cursor:pointer;color:var(--ink-2);transition:.15s;font-weight:600}
+.ch-pick .c.on{background:var(--grad);border-color:transparent;color:#fff;font-weight:800}
+.ai-write{width:100%;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:800;color:#fff;
+  background:var(--grad-copper);cursor:pointer;margin-top:15px;box-shadow:0 6px 16px rgba(255,94,156,.25)}
+.pub-go{width:100%;border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:800;color:#fff;
+  background:var(--grad);cursor:pointer;margin-top:11px;box-shadow:0 6px 16px rgba(123,97,255,.3)}
+.pub-go:active,.ai-write:active{transform:scale(.98)}
+
+/* 海报 */
+.poster-wrap{padding:18px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.poster-wrap canvas{width:100%;max-width:300px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+.poster-wrap .hint{font-size:12px;color:var(--ink-3);text-align:center}
+
+/* Toast */
+.toast{position:fixed;top:46%;left:50%;transform:translate(-50%,-50%) scale(.85);background:rgba(26,23,38,.92);
+  color:#fff;padding:12px 24px;border-radius:14px;font-size:13.5px;z-index:300;opacity:0;transition:.25s;
+  pointer-events:none;text-align:center;max-width:80%;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* 渐变库(更鲜艳) */
+.g1{background:linear-gradient(135deg,#8A5CFF,#FF6FB5)}
+.g2{background:linear-gradient(135deg,#FF8A4C,#FF5E7E)}
+.g3{background:linear-gradient(135deg,#3DA8FF,#5CE0E0)}
+.g4{background:linear-gradient(135deg,#9B5CFF,#C89BFF)}
+.g5{background:linear-gradient(135deg,#FF5C7A,#FF9D8A)}
+.g6{background:linear-gradient(135deg,#1FB6A6,#6FE0C8)}
+.g7{background:linear-gradient(135deg,#FFB020,#FFD86B)}
+.g8{background:linear-gradient(135deg,#3FBF6F,#9CE08B)}
+
+/* ============ 新兴业务:卡片网格 + 概念弹窗 ============ */
+.biz-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:4px}
+.biz-card{position:relative;border-radius:16px;padding:16px 14px 14px;cursor:pointer;background:#fff;
+  border:1px solid var(--line);box-shadow:0 4px 16px rgba(48,28,90,.06);overflow:hidden;
+  transition:transform .15s ease,box-shadow .15s ease}
+.biz-card:active{transform:scale(.97);box-shadow:0 2px 8px rgba(48,28,90,.12)}
+.biz-card::before{content:"";position:absolute;left:0;top:0;width:100%;height:4px}
+.biz-card.g1::before{background:linear-gradient(90deg,#7B61FF,#5B3FE0)}
+.biz-card.g2::before{background:linear-gradient(90deg,#FF7A3D,#FF5E8A)}
+.biz-card.g3::before{background:linear-gradient(90deg,#22D3EE,#0EA5E9)}
+.biz-card.g4::before{background:linear-gradient(90deg,#FFB020,#FF7A3D)}
+.biz-card.g5::before{background:linear-gradient(90deg,#A855F7,#EC4899)}
+.biz-card.g6::before{background:linear-gradient(90deg,#34D399,#10B981)}
+.biz-card.g7::before{background:linear-gradient(90deg,#F472B6,#8B5CF6)}
+.biz-card.g8::before{background:linear-gradient(90deg,#2DD4BF,#7B61FF)}
+.biz-emoji{font-size:30px;line-height:1;margin-bottom:10px}
+.biz-name{font-size:14px;font-weight:800;color:var(--ink);line-height:1.4;margin-bottom:6px}
+.biz-brief{font-size:11px;color:var(--ink-3);line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.biz-more{margin-top:10px;font-size:11px;font-weight:700;color:var(--green-2)}
+
+/* 概念弹窗 */
+.biz-sheet{max-height:90vh}
+.biz-modal-icon{font-size:24px;flex-shrink:0}
+.biz-modal-title-wrap{display:flex;flex-direction:column;gap:2px;line-height:1.3;flex:1;min-width:0}
+.biz-modal-title{font-size:17px;font-weight:800;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.biz-modal-sub{font-size:12px;color:var(--green-2);font-weight:600}
+.biz-modal-body{padding:18px 18px 24px;overflow-y:auto}
+.biz-modal-desc{font-size:14px;line-height:1.85;color:var(--ink-2);margin-bottom:18px}
+.biz-modal-tags{display:flex;flex-wrap:wrap;gap:8px}
+.biz-modal-tag{font-size:12px;padding:6px 12px;border-radius:20px;
+  background:var(--green-soft);color:var(--green-2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="frame">
+
+<!-- ================= 广场 ================= -->
+<div class="page" id="pg-plaza">
+  <div class="top">
+    <div class="statusbar"><span id="clock">9:41</span><span>🚄 四合院</span><span>●●●</span></div>
+    <div class="searchbar" onclick="openChat(SEARCH_PH[_sp])">
+      <span>🔍</span><span id="searchPh">搜索：公积金怎么办？</span><span class="ask">问小四 ›</span>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="ptr" id="ptr" onclick="refreshFeed()">↓ 下拉刷新</div>
+  <div class="feed" id="feed"></div>
+  <div class="loadmore" id="loadmore" onclick="loadMore()">上拉加载更多</div>
+</div>
+
+<!-- ================= 充电站 ================= -->
+<div class="page" id="pg-charge">
+  <div class="top"><div class="statusbar"><span id="clock2">9:41</span><span>🔌 充电站</span><span>●●●</span></div></div>
+  <div class="hero-mini">
+    <h2>充电站 ⚡</h2>
+    <p>学习充电 × 牵引供电 —— 新人从这里接入 27.5kV 的四院能量</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t">🚄 时光专列 <span class="sub">院史一分钟</span></div>
+    <div class="cardx">
+      <ul class="tl">
+        <li><b>1953</b>铁道部设计局<span class="hl">中南设计分局</span>成立(铁四院前身)</li>
+        <li><b>1956</b>扩编更名为<span class="hl">铁道部第四设计院</span></li>
+        <li><b>2003</b>改制后划归中国铁道建筑总公司</li>
+        <li><b>至今</b><span class="hl">"高铁摇篮"</span>:京沪/武广高铁;设计运营高铁约占全国 <span class="hl">1/3</span>,累计设计铁路超 <span class="hl">5.1 万公里</span></li>
+        <li><b>现在</b>600km/h 磁浮 · 智轨 · 数智化——<span class="hl">你上车的这一站</span></li>
+      </ul>
+      <span class="tagx gd">电化院四电沿革 · 待院方史料补充</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t">📖 四院黑话词典 <span class="sub">点词条,问小四 · 悬停暂停</span></div>
+    <div class="cardx"><div class="danmu" id="danmu"></div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t">🛰️ 新兴业务 <span class="sub" id="bizToggle" style="cursor:pointer;color:var(--green-2)" onclick="bizToggle()">更多 ›</span></div>
+    <div id="biz"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-t">📖 经验贴 <span class="sub">选岗位 · 看前辈成长经验</span></div>
+    <div class="jobs">
+      <div class="job" onclick="skillPath('接触网设计')">🪝 接触网设计<small>腕臂之间见功夫</small></div>
+      <div class="job" onclick="skillPath('牵引供电')">⚡ 牵引供电<small>给高铁递上一口电</small></div>
+      <div class="job" onclick="skillPath('通信')">📡 通信<small>让列车永远在线</small></div>
+      <div class="job" onclick="skillPath('信号')">🚦 信号<small>指挥千军万马不追尾</small></div>
+    </div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+
+<!-- ================= 找搭子 ================= -->
+<div class="page" id="pg-buddy">
+  <div class="top"><div class="statusbar"><span id="clock3">9:41</span><span>🤝 邻里</span><span>●●●</span></div></div>
+
+
+  <div class="btabs">
+    <div class="btab on" id="bt0" onclick="switchBuddyTab('mate')">找搭子</div>
+    <div class="btab" id="bt1" onclick="switchBuddyTab('market')">好物集市</div>
+  </div>
+
+  <div class="btab-pane" id="buddyMate">
+    <div class="sec">
+      <div class="bud-cats">
+        <div class="bud-cat" onclick="toast('已挂出「饭搭子」牌子 🍚')"><span class="i">🍚</span>饭搭子</div>
+        <div class="bud-cat" onclick="toast('已挂出「球搭子」牌子 🏸')"><span class="i">🏸</span>球搭子</div>
+        <div class="bud-cat" onclick="toast('已挂出「通勤搭子」牌子 🚇')"><span class="i">🚇</span>通勤搭子</div>
+        <div class="bud-cat" onclick="toast('已挂出「自习搭子」牌子 📖')"><span class="i">📖</span>自习搭子</div>
+      </div>
+      <button class="match-btn" onclick="matchBuddies()">✨ AI 同频匹配 —— 找到和我一挂的人</button>
+      <div id="mates"></div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-t">📅 周末活动 <span class="sub">报名 +30 里程</span></div>
+      <div id="acts"></div>
+    </div>
+  </div>
+
+  <div class="btab-pane" id="buddyMarket" style="display:none">
+    <div class="sec">
+      <div class="sec-t">🛍️ 好物集市 <span class="sub">闲置 / 拼团 / 团购 · 院内流通</span></div>
+      <div class="goods-grid" id="goods"></div>
+      <button class="match-btn" onclick="toast('发布好物功能规划中,先逛逛 👀')">＋ 我也要卖好物</button>
+    </div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+
+<!-- ================= 我的车票 ================= -->
+<div class="page on" id="pg-ticket">
+  <div class="top"><div class="statusbar"><span id="clock4">9:41</span><span>🏡 我的小院</span><span>●●●</span></div></div>
+  <div class="ticket">
+    <!-- 左侧：持票人 -->
+    <div class="tk-left">
+      <div class="tk-avatar">👤</div>
+      <div class="tk-name">XXX</div>
+      <div class="tk-dept">XX院-XX所</div>
+    </div>
+    <!-- 撕开虚线 -->
+    <div class="tk-divider"></div>
+    <!-- 右侧：路线 + 车次信息 -->
+    <div class="tk-right">
+      <div class="tk-route">
+        <div class="tk-from">五湖四海<small>2026-07-01 上车</small></div>
+        <span class="tk-train" aria-hidden="true">🚄</span>
+        <div class="tk-to">铁四院<small id="tkFrom">终身有效</small></div>
+      </div>
+      <div class="tk-line-sep"></div>
+      <div class="tk-info">
+        <div class="tk-row"><span>检票口</span><b>武汉</b></div>
+        <div class="tk-row"><span>发车日</span><b>2026.07.01</b></div>
+        <div class="tk-row"><span>席位</span><b>助理工程师</b></div>
+        <div class="tk-row"><span>入职</span><b id="tkDays">7</b><span>天</span></div>
+      </div>
+      <div class="tk-bar">
+        <div class="tk-barcode" aria-hidden="true"></div>
+        <div class="tk-no">NO.008285</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu">
+    <div class="mi" onclick="makePoster()">🎨 AI 生成入职纪念海报 <span class="bdg">AI</span></div>
+    <div class="mi" onclick="toast('收藏夹还空着,去广场逛逛吧')">⭐ 我的收藏 <span class="arr">›</span></div>
+    <div class="mi" onclick="openMine('posts')">📝 我的帖子 <span class="arr">›</span></div>
+    <div class="mi" onclick="openMine('fleet')">🚗 我的车队 <span class="arr">›</span></div>
+    <div class="mi" onclick="toast('公积金:办理中(入职次月开户)\n社保:已参保 ✓\n工牌:已制作 ✓')">📋 办事进度(公积金/社保/工牌) <span class="arr">›</span></div>
+    <div class="mi" onclick="toast('发帖 +10 · 活动报名 +30 · 点赞 +1\n里程可兑换工会文创(规划中)')">🏅 里程规则 <span class="arr">›</span></div>
+    <div class="mi" onclick="toast('demo 说明:本演示离线运行。\n后端代理地址配置后即接入真实大模型。')">⚙️ 设置 / 关于 demo <span class="arr">›</span></div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+
+<!-- 悬浮 AI 球 -->
+<button class="fab hint" id="fab" onclick="openChat()" style="right:calc(50% - 210px + 14px)">
+  🤖<span class="tip">有问题?问小四同学</span>
+</button>
+
+<!-- 底部 Tab -->
+<nav class="tabbar">
+  <div class="tab" data-pg="plaza" onclick="go('plaza',this)"><span class="i">🏛️</span>广场</div>
+  <div class="tab" data-pg="charge" onclick="go('charge',this)"><span class="i">🔌</span>充电站</div>
+  <div class="tab" onclick="openPub()"><span class="plus">＋</span>发一趟</div>
+  <div class="tab" data-pg="buddy" onclick="go('buddy',this)"><span class="i">🤝</span>邻里</div>
+  <div class="tab on" data-pg="ticket" onclick="go('ticket',this)"><span class="i">🏡</span>我的小院</div>
+</nav>
+
+</div><!-- /frame -->
+
+<!-- ===== 小四同学 ===== -->
+<div class="ovl" id="ovl-chat">
+  <div class="sheet" style="height:88vh">
+    <div class="sheet-h">🤖 小四同学
+      <span style="font-size:10.5px;font-weight:400;color:var(--ink-3)" id="aiMode">· 离线知识库</span>
+      <button class="x" onclick="closeOvl('ovl-chat')">✕</button>
+    </div>
+    <div class="sheet-b chat-b" id="chatB"></div>
+    <div class="hint-q" id="histHint" style="display:none;padding:4px 14px 6px"><span>🧠 已记住你的上下文</span><button onclick="clearChatHist()">清除记忆</button></div>
+    <div class="hint-q" id="followQ" style="display:none"></div>
+    <div class="qs">
+      <button class="q" onclick="ask('腕臂是什么？')">腕臂是什么？</button>
+      <button class="q" onclick="ask('公积金什么时候能办？')">公积金</button>
+      <button class="q" onclick="ask('班车时刻表')">班车</button>
+      <button class="q" onclick="ask('附近哪里过早？')">过早推荐</button>
+    </div>
+    <div class="chat-in">
+      <input id="chatIn" placeholder="问小四:报到 / 四电术语 / 生活服务…" onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">发送</button>
+    </div>
+    <div class="hint-q" id="followQ" style="display:none"></div>
+    <div class="hint-q" id="histHint" style="display:none"><span>🧠 上次聊过(点击继续)</span></div>
+  </div>
+</div>
+
+<!-- ===== 帖子详情 ===== -->
+<div class="ovl" id="ovl-det">
+  <div class="sheet" style="max-height:88vh">
+    <div class="det-cov" id="detCov"><button class="x" style="position:absolute;top:12px;right:14px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.9);cursor:pointer" onclick="closeOvl('ovl-det')">✕</button><span id="detEm"></span></div>
+    <div class="sheet-b det-b">
+      <h2 id="detTt"></h2>
+      <div class="det-au"><span id="detAv"></span><span id="detAu"></span><span id="detCh" style="background:var(--green-soft);color:var(--green-2);padding:1px 8px;border-radius:999px;font-size:10.5px"></span><span class="lk2" id="detLk" onclick="likeFromDet()"></span></div>
+      <div class="bd" id="detBd"></div>
+      <div class="det-tags" id="detTags"></div>
+      <button class="sum-btn" onclick="summarize()">✨ 小四划重点</button>
+      <div class="sum-box" id="sumBox"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 发一趟 ===== -->
+<div class="ovl" id="ovl-pub">
+  <div class="sheet">
+    <div class="sheet-h">🚄 发一趟 <button class="x" onclick="closeOvl('ovl-pub')">✕</button></div>
+    <div class="sheet-b pub-b">
+      <label>封面(选一张"照片")</label>
+      <div class="em-pick" id="emPick"></div>
+      <label>频道</label>
+      <div class="ch-pick" id="chPick"></div>
+      <label>标题</label>
+      <input type="text" id="pubTt" placeholder="给这趟车起个名字…">
+      <label>正文</label>
+      <textarea id="pubBd" placeholder="今天看到了什么 / 吃到了什么 / 学到了什么…"></textarea>
+      <button class="ai-write" onclick="aiCompose()">✨ AI 帮我写(识别封面自动写文案+打标签)</button>
+      <button class="pub-go" onclick="publish()">发车 🚄</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 海报 ===== -->
+<div class="ovl" id="ovl-poster">
+  <div class="sheet">
+    <div class="sheet-h">🎨 AI 入职纪念海报 <button class="x" onclick="closeOvl('ovl-poster')">✕</button></div>
+    <div class="sheet-b poster-wrap">
+      <canvas id="posterCv" width="600" height="900"></canvas>
+      <div class="hint">demo 提示:真机中长按图片即可保存分享</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 我的(帖子/车队) ===== -->
+<div class="ovl" id="ovl-mine">
+  <div class="sheet">
+    <div class="sheet-h"><span id="mineTitle">我的</span>
+      <button class="x" onclick="closeOvl('ovl-mine')">✕</button>
+    </div>
+    <div class="sheet-b" id="mineBody" style="padding:14px"></div>
+  </div>
+</div>
+
+<!-- ===== 新兴业务概念弹窗 ===== -->
+<div class="ovl" id="ovl-biz">
+  <div class="sheet biz-sheet">
+    <div class="sheet-h">
+      <span class="biz-modal-icon" id="bizModalIcon">💡</span>
+      <div class="biz-modal-title-wrap">
+        <div class="biz-modal-title" id="bizModalTitle"></div>
+        <div class="biz-modal-sub" id="bizModalSub"></div>
+      </div>
+      <button class="x" onclick="closeOvl('ovl-biz')">✕</button>
+    </div>
+    <div class="sheet-b biz-modal-body" id="bizModalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   配置:填入后端代理地址即接入真实大模型(claude-opus-4-8)
+   为空则使用离线知识库兜底 —— 保证比赛现场断网可演示
+   ========================================================= */
+var AI_CONFIG={endpoint:"",model:"claude-opus-4-8"};
+
+/* ================= 数据 ================= */
+var CHANNELS=[["all","推荐"],["guozao","过早了冇"],["gongdi","现场直击"],["baodao","新人报到"],["zhuanzu","转租拼车"],["guanfang","官方发车"],["haowu","好物集市"]];
+var CH_NAME={guozao:"过早了冇",gongdi:"现场直击",baodao:"新人报到",zhuanzu:"转租拼车",guanfang:"官方发车",haowu:"好物集市"};
+
+var POSTS=[
+{id:1,ch:"guanfang",gf:1,em:"🚄",g:"g3",h:96,tt:"时速600km磁浮试验成功,四院人又上大分!",au:"四合院官方号",av:"🏛️",lk:312,
+ bd:["时速600公里常导高速磁浮建造关键技术迈向工程应用——铁四院深度参与,弥补了自主知识产权、系统产业链、可工程化应用的空白。","从武广高铁的350,到磁浮的600,\"中国速度\"的下一棒,就在我们手里。"],tags:["高速磁浮","大国重器","铁四院"]},
+{id:2,ch:"guozao",em:"🍜",g:"g2",h:120,tt:"院门口这家热干面,电化院人排队认证",au:"芝麻酱拌一切",av:"🧑",lk:86,
+ bd:["实测:早上7:20去不用排队,7:40后队伍拐弯。","芝麻酱给得豪横,记得加一勺辣萝卜丁,配蛋酒绝杀。","坐标:院区东门出来右手第二家,老板娘会记住你的口味。"],tags:["过早","热干面","院区周边"]},
+{id:3,ch:"gongdi",em:"⚡",g:"g1",h:110,tt:"第一次上道看接触网腕臂,帅哭",au:"牵引小白",av:"👷",lk:64,
+ bd:["师傅指着支柱说:平腕臂、斜腕臂、定位管,三件套认清楚。","27.5kV就在头顶上方,那一刻突然明白了什么叫\"给高铁递电\"。","新人建议:上道前把《接触网篇》黑话词典过一遍,不然全程只能嗯嗯嗯。"],tags:["接触网","上道日记","新人成长"]},
+{id:4,ch:"zhuanzu",em:"🏠",g:"g4",h:90,tt:"杨园片区转租|距院区两站地铁,拎包入住",au:"同期的你",av:"🧳",lk:23,
+ bd:["项目外派半年,房子转租:一室一厅,4号线杨园站步行5分钟。","家电全齐,房东nice,租金可小刀。优先转给院里同事。"],tags:["转租","杨园","4号线"]},
+{id:5,ch:"baodao",em:"🌸",g:"g5",h:104,tt:"Day 1 报到打卡:领工牌的手是抖的",au:"武小新",av:"🐣",lk:141,
+ bd:["从校园到四院,一张工牌的距离。","流程超顺:人事报到→领工牌→分配工位→师傅见面,下午就进了项目群。","晚上和同期约了热干面,武汉,请多关照!"],tags:["新人报到","Day1","入职"]},
+{id:6,ch:"guanfang",gf:1,em:"🚈",g:"g6",h:88,tt:"全国首条智轨示范线,是我们设计的",au:"四合院官方号",av:"🏛️",lk:198,
+ bd:["不需要钢轨的\"轨道交通\"——智轨列车沿虚拟轨道行驶,铁四院设计建成全国首条示范线和商业运营线。","城市交通的新物种,继续由四院人定义。"],tags:["智轨","新兴业务","第一条"]},
+{id:7,ch:"guozao",em:"🐟",g:"g6",h:112,tt:"糊汤粉配油条,武汉人的隐藏吃法",au:"过早课代表",av:"😋",lk:57,
+ bd:["鲜鱼熬的糊汤,胡椒给足,把油条撕碎泡进去——软糯鲜香,这才是本体。","早上6:00-10:00营业,晚了就只能明天请早。"],tags:["过早","糊汤粉","武汉味道"]},
+{id:8,ch:"gongdi",em:"🌙",g:"g3",h:96,tt:"牵引变电所夜班图鉴:凌晨三点的27.5kV",au:"守夜电工",av:"🦉",lk:49,
+ bd:["夜班巡视,盯着智能监控屏,每一条馈线的电流都在眼前跳动。","高铁白天跑多快,夜里的我们就得多稳。","下夜班的糊米酒,是全武汉最甜的。"],tags:["牵引供电","夜班","坚守"]},
+{id:9,ch:"zhuanzu",em:"🚗",g:"g8",h:86,tt:"求拼车:光谷→院区,早8晚6,油费AA",au:"光谷通勤侠",av:"🚙",lk:18,
+ bd:["坐标光谷广场,每天8:00出发,座位还剩2个。","车内禁烟,音乐可点歌,周五晚上可绕道江滩看日落。"],tags:["拼车","光谷","通勤"]},
+{id:10,ch:"baodao",em:"📐",g:"g1",h:108,tt:"师傅带我认图纸:原来接触网平面图长这样",au:"CAD小学徒",av:"✏️",lk:73,
+ bd:["师徒结对第一课:一张接触网平面布置图,师傅讲了整整一下午。","锚段、拉出值、跨距……每个词都是新的,但师傅说:三个月后你回头看,都是常识。","被\"传帮带\"这个词狠狠感动到。"],tags:["师带徒","接触网","成长"]},
+{id:11,ch:"guanfang",gf:1,em:"🏗️",g:"g7",h:100,tt:"全国1/3高铁,出自这栋楼的图纸",au:"四合院官方号",av:"🏛️",lk:266,
+ bd:["从1953年中南设计分局,到\"高铁摇篮\":铁四院设计运营高铁约占全国三分之一,累计设计铁路超5.1万公里。","你脚下的武汉地铁、窗外的长江大桥,也都是四院人的作品。","欢迎上车,新同事。"],tags:["高铁摇篮","院史","1953"]},
+{id:12,ch:"guozao",em:"🥟",g:"g2",h:94,tt:"老通城豆皮:外酥里糯,三鲜给到位",au:"豆皮鉴定官",av:"🕵️",lk:66,
+ bd:["糯米打底,鲜肉鲜蛋鲜虾,铁锅一压,金黄酥脆。","工作日中午去人少,配一碗蛋酒,下午画图都有劲。"],tags:["过早","豆皮","老字号"]},
+{id:13,ch:"gongdi",em:"🤖",g:"g4",h:106,tt:"4C检测车出动!接触网的\"体检医生\"",au:"检测车车迷",av:"📷",lk:88,
+ bd:["今天跟车看4C检测:高清相机+激光扫描,接触网的每个零部件都逃不过它的眼睛。","以前人工巡检一晚上几公里,现在一趟车跑完全线——这就是智能运维。","科技改变铁路,真的不是口号。"],tags:["4C检测","智能运维","黑科技"]},
+{id:14,ch:"baodao",em:"🛋️",g:"g5",h:98,tt:"单身公寓改造记:1000块搞定出租屋婚礼",au:"宜家搬运工",av:"🔨",lk:52,
+ bd:["公寓虽小,五脏俱全:一盏落地灯+一块地毯+三幅挂画,幸福感直接拉满。","清单已整理,评论区自取。周末欢迎来参观(带热干面入场)。"],tags:["公寓改造","安家","好物清单"]},
+{id:15,ch:"guanfang",gf:1,em:"🧠",g:"g3",h:92,tt:"数智化事业部:500+人,把铁路搬进数字世界",au:"四合院官方号",av:"🏛️",lk:174,
+ bd:["智能勘察—智能设计—智能建造—智能运维,全链条数智化。","BIM、数字孪生、巡检机器人……在四院,画图纸的方式正在被重新发明。","懂AI的土木人,和懂土木的AI,都在这里。"],tags:["数智化","BIM","智能设计"]},
+{id:16,ch:"guozao",em:"🥛",g:"g7",h:84,tt:"蛋酒:热干面的官方CP,不接受反驳",au:"甜党代表",av:"🍬",lk:44,
+ bd:["鸡蛋打散冲入沸水,加一勺米酒——蛋香酒香交融,专治热干面的干。","2-3块钱一碗,过早的仪式感就这么便宜。"],tags:["过早","蛋酒","武汉标配"]},
+{id:17,ch:"gongdi",em:"🚇",g:"g6",h:102,tt:"隧道巡检机器人首秀:它比我先下班",au:"隧道打工人",av:"⛑️",lk:61,
+ bd:["轨道、接触网、隧道病害,无人化快速巡检一条龙。","看着机器人稳稳跑完全程,师傅感慨:三十年前我们打着手电筒巡隧道。","时代在进步,而我们始终在线。"],tags:["巡检机器人","隧道","智能建造"]},
+{id:18,ch:"zhuanzu",em:"🛏️",g:"g1",h:88,tt:"徐东合租招室友:主卧带飘窗,近8号线",au:"徐东钉子户",av:"🏙️",lk:15,
+ bd:["三室两厅找室友,现住两个院里同事,作息规律,周末一起打球。","徐东性价比真的高,通勤地铁直达,楼下就是商圈。"],tags:["合租","徐东","室友"]},
+{id:19,ch:"baodao",em:"🎤",g:"g4",h:96,tt:"新员工之夜:领导唱了一首《朋友》",au:"氛围组组长",av:"🎉",lk:129,
+ bd:["工会组织的新员工KTV之夜,从拘谨到抢麦只用了半小时。","原来严肃的总工也会唱周杰伦,原来同期里藏着音乐学院毕业的。","下一场活动:东湖绿道骑行,找搭子页面可报名!"],tags:["新员工","工会活动","破冰"]},
+{id:20,ch:"guanfang",gf:1,em:"🌉",g:"g5",h:104,tt:"再看一眼长江大桥:这是我们的作品",au:"四合院官方号",av:"🏛️",lk:231,
+ bd:["万里长江第一桥,1957年通车,公铁两用,至今车流不息。","当你把它当作\"景点\"时,它是风景;当你入职四院后,它是前辈们留在长江上的签名。","城市即作品集——欢迎继续书写。"],tags:["长江大桥","城市即作品集","传承"]},
+{id:21,ch:"guozao",em:"🍩",g:"g2",h:90,tt:"面窝:武汉人的甜甜圈,3块钱的酥脆",au:"油炸爱好者",av:"🍤",lk:38,
+ bd:["米浆+黄豆浆,特制铁勺一炸,边厚中脆。","刚出锅的面窝配热干面,碳水暴击,但谁能拒绝呢?"],tags:["过早","面窝","小吃"]},
+{id:22,ch:"gongdi",em:"🎆",g:"g8",h:100,tt:"送电成功!全线接触网一次受电成功的夜晚",au:"四电人生",av:"🔋",lk:157,
+ bd:["倒计时归零,合闸——接触网带电,全线灯光次第亮起。","那一刻工地上有人欢呼有人抹泪,几个月的图纸和汗水,都值了。","这就是四电人的高光时刻,以后你也会有。"],tags:["送电成功","接触网","高光时刻"]},
+{id:23,ch:"baodao",em:"📚",g:"g6",h:94,tt:"入职一个月书单:师傅塞给我的五本宝典",au:"图书管理员",av:"🤓",lk:47,
+ bd:["《接触网设计规范》打底,《牵引供电系统》进阶,剩下三本评论区见。","师傅原话:图纸会骗人,规范不会。","配合充电站的黑话词典食用效果更佳。"],tags:["书单","学习","新人成长"]},
+{id:24,ch:"guanfang",gf:1,em:"🎁",g:"g7",h:86,tt:"工会上新:里程可兑文创,首批曝光",au:"四合院官方号",av:"🏛️",lk:95,
+ bd:["高铁模型徽章、接触网腕臂钥匙扣、\"过早了冇\"帆布袋……","发帖+10里程,活动+30里程,攒里程换周边,安排!"],tags:["工会","文创","里程商城"]}
+];
+
+var DICT=[
+["投资估算","项目前期框算要花多少钱,决定能不能立。"],
+["运量预测","预测未来客货运量,是线路标准的源头。"],
+["财务评价","算IRR和回收期,看项目经济上值不值。"],
+["用地预审","项目落地前先过土地红线,卡住能占多少地。"],
+["平纵断面","平面走向加纵断面高低,线路的骨骼。"],
+["道岔","让列车换线的活动关节。"],
+["曲线超高","弯道把外轨垫高,杯子不洒。"],
+["限界","设备和人不能越过的红线框。"],
+["站房雨棚","候车厅加站台遮雨棚。"],
+["旅客地道","站台间不横穿股道的地下通道。"],
+["柱网","柱子怎么排,决定空间怎么切。"],
+["疏散流线","着火了人往哪跑的路线。"],
+["桩基承台","打桩加承台,把桥锚进地底。"],
+["挂篮悬臂","桥一段段伸着建,像挑扁担。"],
+["抗震支座","地震来了替桥扛晃的关节。"],
+["预拱度","提前往上弯,荷载后刚好平。"],
+["追踪间隔","前后车最小安全时距。"],
+["天窗期","深夜给设备检修的空窗。"],
+["牵引定数","一列车最多能拉多重。"],
+["区段通过能力","一段线一天能过多少车。"],
+["数字孪生","给工程建个虚拟分身。"],
+["BIM 正向设计","先建模再出图,不是翻模。"],
+["参数化建模","改个数,模型自动变。"],
+["数字底座","把数据打通的那层地基。"],
+["围岩分级","石头软硬分级,定支护强度。"],
+["初期支护","开挖后先喷混凝土稳住。"],
+["二次衬砌","再浇一层,永久的壳。"],
+["超前地质预报","打钻探前方,别挖穿了。"],
+["CTCS-3","高铁列控,车地实时对话。"],
+["轨道电路","钢轨当电线,探列车占用。"],
+["CTC 调度集中","一个中心管一片车。"],
+["GSM-R","铁路专用手机网。"],
+["地连墙","地下连续墙,深坑的城墙。"],
+["盾构区间","盾构机钻出的隧道段。"],
+["基坑支护","挖坑不塌的临时撑。"],
+["地表沉降","挖太狠地面会塌,得盯紧。"],
+["接触网","悬在铁道上空的供电\"高压线\",列车的能量来源。电化院的看家本领之一。"],
+["腕臂","接触网的\"手臂\":装在支柱上的旋转结构,由平腕臂+斜腕臂+定位管组成,负责把接触线定位在受电弓正上方。"],
+["受电弓","列车头顶那只\"弓\",升起来贴住接触线取电,27.5kV由此入车。"],
+["牵引变电所","铁路沿线的\"充电宝\":把电网的110kV/220kV降压变换成27.5kV供给接触网。"],
+["4C","接触网悬挂状态检测监测装置:高清成像+智能识别,给接触网做\"CT体检\"。"],
+["馈线","从牵引变电所送电到接触网的\"输电干道\"。"],
+["分相","不同相位电的\"分界线\",列车过分相要惰行——就像换气一样自然。"],
+["回流线","电流跑完一圈要回家,回流线就是它的\"归途\"。"],
+["硬横跨","横跨多股道的刚性支撑结构,像车站上方的\"钢铁天桥\",挂着一整排接触网。"],
+["拉出值","接触线相对受电弓中心的偏移量,让滑板磨耗均匀——磨刀不误砍柴工的智慧。"]
+];
+
+var BIZ=[
+["🧲","600km/h 高速磁浮","下一代\"中国速度\",铁四院深度参与建造关键技术攻关。"],
+["🚈","智轨","无钢轨的虚拟轨道交通,全国首条示范线/商业运营线出自四院。"],
+["🏭","智能牵引变电所","无人值守+智能监控,变电所学会了\"自己照顾自己\"。待院方核实补充。"],
+["🌱","新能源","光伏+铁路、再生制动能量回收、储能……让高铁跑得更\"绿\"。待院方核实补充。"],
+["🧠","数智化事业部","500+人团队:智能勘察—设计—建造—运维全链条。"],
+["📷","4C检测/巡检机器人","接触网体检医生+隧道巡检员,人从\"跑现场\"变\"看屏幕\"。"],
+["⚡","接触网智能运维","AI诊断+无人机巡检,从计划修→状态修,电磁所核心方向之一。"],
+["🛡️","轨道交通电磁兼容","整车/子系统EMC测试与仿真,高铁出海必须拿下的硬仗。"],
+["⛈️","雷电预警与主动防雷","线路级雷电预警,提前30min主动降弓,电磁所看家本领。"],
+["🧲","永磁牵引系统","比异步电机效率高3-5%,下一代高铁牵引方向。"],
+["🏗️","装配式铁路站房","工厂预制+现场拼装,铁路建筑的工业化革命。待院方核实。"],
+["🌊","水下隧道","琼州海峡、渤海海峡……跨越天堑的超级工程。待院方核实。"],
+["🌐","海外工程咨询","一带一路铁路设计输出,四院出海的尖兵。待院方核实。"],
+["🏙️","TOD综合开发","站城一体化,铁路+地产的综合开发新模式。待院方核实。"]
+];
+
+var BIZ_DETAIL={
+"600km/h 高速磁浮":{title:"600km/h 高速磁浮",subtitle:"下一代中国速度",color:"g1",
+ desc:"高速磁浮采用磁力悬浮、直线电机驱动,最高运营速度可达600km/h,填补了高铁(350km/h)与飞机(800km/h)之间的速度空白。\n\n铁四院深度参与国家磁浮交通重大专项,承担线路、站场、桥梁、隧道等系统设计,以及沿线生态环境影响研究等关键技术攻关。",
+ tags:["磁浮","600km/h","下一代交通","国家专项"]},
+"智轨":{title:"智轨(ART)",subtitle:"无钢轨的虚拟轨道交通",color:"g2",
+ desc:"智能轨道快运系统(Autonomous Rail Rapid Transit)是一种创新型中低运量轨道交通:车辆沿地面虚拟轨道行驶,无需铺设实体钢轨,兼具地铁的大运量与公交的灵活性。\n\n铁四院设计建成全国首条示范线(株洲)和首条商业运营线(宜宾),定义了城市交通新物种的技术标准与运营模式。",
+ tags:["智轨","ART","虚拟轨道","宜宾","株洲"]},
+"智能牵引变电所":{title:"智能牵引变电所",subtitle:"无人值守的智能变电站",color:"g3",
+ desc:"智能牵引变电所采用无人值守+智能监控模式,通过智能巡检机器人、在线监测、AI诊断等技术,实现设备状态实时感知、故障自动预警、倒闸操作远程控制。\n\n变电所从有人值班进化到自己照顾自己,大幅降低运维成本,提升供电可靠性,是智能铁路的关键基础设施。",
+ tags:["智能变电所","无人值守","AI诊断","远程控制"]},
+"新能源":{title:"新能源",subtitle:"让高铁跑得更绿",color:"g8",
+ desc:"铁路新能源技术包括:光伏+铁路(在车站、沿线部署光伏)、再生制动能量回收(将列车制动能量回馈电网)、储能系统(平抑波动、应急供电)。\n\n铁四院积极探索铁路碳中和路径,推动高铁从用电大户向绿色能源消费者转型。",
+ tags:["光伏","再生制动","储能","碳中和","绿色铁路"]},
+"数智化事业部":{title:"数智化事业部",subtitle:"500+人的数字化军团",color:"g4",
+ desc:"数智化事业部是铁四院数字化转型的核心力量,500余人覆盖智能勘察—智能设计—智能建造—智能运维全链条。\n\n核心能力包括BIM正向设计、数字孪生、智能建造装备、工程大数据平台等,正在重新定义铁路工程的生产方式。",
+ tags:["数智化","BIM","数字孪生","智能建造","500+人"]},
+"4C检测/巡检机器人":{title:"4C检测 / 巡检机器人",subtitle:"接触网的体检医生",color:"g5",
+ desc:"4C检测(接触网悬挂状态检测监测装置)是接触网的CT机,通过高清成像、激光扫描自动检测零部件状态。\n\n隧道巡检机器人替代人工进入危险环境,实现隧道衬砌、轨道自动检测。人从跑现场变成看屏幕,大幅提升检测效率与安全性。",
+ tags:["4C检测","巡检机器人","接触网","AI识别","无人检测"]},
+"接触网智能运维":{title:"接触网智能运维",subtitle:"从计划修到状态修",color:"g6",
+ desc:"传统接触网维护采用计划修——定期检修,不管设备状态如何。智能运维则通过AI诊断、无人机巡检、在线监测,实时掌握设备健康状态,实现状态修——该修才修、修在点上。\n\n这是电磁所的核心研究方向,已在全国多条高铁线路推广应用。",
+ tags:["智能运维","状态修","AI诊断","无人机","电磁所"]},
+"轨道交通电磁兼容":{title:"轨道交通电磁兼容(EMC)",subtitle:"高铁出海的通行证",color:"g1",
+ desc:"电磁兼容(EMC)是指设备在电磁环境中正常工作且不干扰其他设备的能力。高铁包含牵引、信号、通信等大量电子设备,EMC是安全运行的基础。\n\n铁四院电磁所具备整车及子系统EMC测试与仿真能力,为高铁出口欧洲、东南亚等国际市场提供技术支撑,是高铁出海必须拿下的硬仗。",
+ tags:["EMC","电磁兼容","高铁出海","测试认证","电磁所"]},
+"雷电预警与主动防雷":{title:"雷电预警与主动防雷",subtitle:"电磁所的看家本领",color:"g7",
+ desc:"铁路雷电灾害可能导致接触网跳闸、设备损坏,影响行车安全。铁四院研发线路级雷电预警系统可提前30分钟预警雷暴,并自动触发主动降弓保护——让列车受电弓降下,避免雷击。\n\n这是电磁所的核心技术之一,已在国内多条高铁线路部署应用。",
+ tags:["雷电预警","主动防雷","降弓保护","电磁所","30分钟预警"]},
+"永磁牵引系统":{title:"永磁牵引系统",subtitle:"下一代高铁牵引方向",color:"g8",
+ desc:"永磁同步电机相比传统异步电机,效率提高3-5%,体积更小、重量更轻、噪音更低。采用永磁牵引的高铁列车更节能、更强劲。\n\n这是下一代高铁牵引系统的重点方向,铁四院正在开展相关技术研究与应用探索。",
+ tags:["永磁牵引","同步电机","节能","下一代高铁"]},
+"装配式铁路站房":{title:"装配式铁路站房",subtitle:"铁路建筑的工业化革命",color:"g2",
+ desc:"装配式建筑是指将建筑构件在工厂预制,运输到现场拼装。相比传统现浇施工,具有工期短、质量高、污染少、人工省等优势。\n\n铁四院正在推动铁路站房从工地建造向工厂制造转型,引领铁路建筑的工业化革命。",
+ tags:["装配式","工业化","绿色建筑","快速建造"]},
+"水下隧道":{title:"水下隧道",subtitle:"跨越天堑的超级工程",color:"g3",
+ desc:"水下隧道是跨越海峡、海湾、江河的关键工程。铁四院正在开展琼州海峡、渤海海峡等超级水下隧道的前期研究。\n\n这些工程将面临超高水压、复杂地质、超长距离等世界级挑战,代表了中国隧道技术的最高水平。",
+ tags:["水下隧道","琼州海峡","渤海海峡","超级工程"]},
+"海外工程咨询":{title:"海外工程咨询",subtitle:"一带一路的铁路输出",color:"g4",
+ desc:"铁四院积极响应一带一路倡议,承担印尼雅万高铁、中老铁路、匈塞铁路等海外项目的工程咨询与设计。\n\n将中国高铁技术标准、建设经验输出海外,是铁四院国际化的尖兵业务。",
+ tags:["一带一路","海外工程","雅万高铁","中老铁路","国际化"]},
+"TOD综合开发":{title:"TOD综合开发",subtitle:"站城一体化新模式",color:"g5",
+ desc:"TOD(Transit-Oriented Development)是以公共交通为导向的城市开发模式,围绕铁路站点打造集交通、商业、办公、居住于一体的综合社区。\n\n铁四院积极探索铁路+地产的综合开发模式,推动铁路从单一交通功能向城市活力节点转型。",
+ tags:["TOD","站城一体","综合开发","铁路+地产"]}
+};
+
+var ACTS=[
+["🚴","东湖绿道骑行 · 周六 08:00","12人已上车 · 官方作品\"东湖绿道\"实地打卡"],
+["📸","江滩日落野餐 · 周日 17:00","8人已上车 · 顺路讲讲长江大桥的故事"],
+["🎤","KTV新员工之夜 · 周五 19:00","15人已上车 · 总工的《朋友》返场待定"]
+];
+
+var MATES=[
+["🧑‍💻","接触网组 · 小杨","同期入职 · 都爱羽毛球 · 都从成都来","92%"],
+["👩‍🔬","牵引供电组 · 阿琳","都在杨园租房 · 都是糊汤粉党","87%"],
+["🧑‍🎨","通信组 · 大熊","都想学BIM · 周末都想去东湖骑行","81%"]
+];
+
+var GOODS=[
+["🚲","九成新公路自行车","¥480","小杨 · 接触网组","毕业搬家出,骑行半年保养好,变速顺滑","闲置"],
+["🪑","人体工学椅","¥260","阿琳 · 牵引供电组","工位升级换下的,无破损,久坐党福音","闲置"],
+["🏸","尤尼克斯球拍×2","¥150","大熊 · 通信组","组队打球用,含一筒球,拎走即战","拼团"],
+["🍜","热干面月卡(户部巷)","¥99/月","工会 · 生活服务","院内团购价,比单买省 30%","团购"],
+["🧥","铁四院定制冲锋衣 M","¥120","小李 · 桥梁组","多领一件,全新带标,仅试穿","闲置"],
+["📚","《铁路通信信号》教材","¥30","小王 · 通号所","考证用毕,重点已划,笔记齐全","闲置"],
+["💡","桌面护眼台灯","¥45","小张 · 建筑组","搬家出,九成新,三档调光","闲置"],
+["☕","瑞幸咖啡券×10","¥80","小陈 · 数智化","攒的券,周内有效,可拆分","转让"]
+];
+
+/* 离线知识库(真API未配置时兜底) */
+var KB=[
+[/腕臂/,"腕臂是接触网的\"手臂\"——安装在支柱上的旋转结构,负责把接触线精准定位在受电弓上方。上道认三件套:平腕臂+斜腕臂+定位管。","四电黑话词典 · 接触网篇 §2"],
+[/接触网/,"接触网是悬在铁道上空的供电系统,列车靠受电弓从它身上取电(27.5kV)。它是电化院的看家专业之一——你未来图纸上的主角。","四电黑话词典 · 接触网篇 §1"],
+[/公积金|社保/,"公积金由院人事在入职次月统一开户,无需自办;社保入职当月参保。进度可在「我的车票 → 办事进度」查看。","新员工报到手册(待院方核实)"],
+[/班车/,"院区班车:光谷线/徐东线/汉口线,早班7:20-8:00每20分钟一班,晚班17:30/18:30两班。具体站点以院内通知为准。","生活服务卡片(demo示例·待院方核实)"],
+[/食堂/,"院区食堂:早餐6:50起供应热干面/豆皮/面窝(过早了冇频道有真人测评),午餐11:30-13:00,刷工牌结算。","生活服务卡片(demo示例·待院方核实)"],
+[/过早|热干面|早餐/,"过早推荐:院区东门热干面(7:40前去不排队)、糊汤粉配油条、老通城豆皮。广场「过早了冇」频道有同事们的实测帖。","广场·过早了冇频道"],
+[/报到|入职流程/,"报到流程:人事报到→领工牌→分配工位→师傅见面→进项目群,一天走完。别忘了到「我的车票」领取你的入职纪念海报。","新员工报到手册(待院方核实)"],
+[/磁浮/,"时速600公里常导高速磁浮建造关键技术已迈向工程应用,铁四院深度参与。这是继350km/h高铁之后,\"中国速度\"的下一棒。","官方发车 · 新华网报道"],
+[/4c|检测/i,"4C是接触网悬挂状态检测监测装置:高清成像+智能识别零部件缺陷,一趟车完成全线\"体检\",取代大量人工夜巡。","四电黑话词典 · 智能运维篇"],
+[/院史|历史|1953/,"一分钟院史:1953年铁道部中南设计分局成立→1956年更名铁道部第四设计院→2003年划归中国铁建→如今\"高铁摇篮\",设计运营高铁约占全国1/3。详见充电站「时光专列」。","时光专列 · 院史时间轴"],
+[/租房|公寓/,"租房建议:杨园(近院区,4号线)、徐东(性价比)、光谷(热闹)。广场「转租拼车」频道常有同事直租转租,比中介靠谱。","广场·转租拼车频道"],
+[/工资|薪酬|待遇/,"薪酬相关请以录用通知和人事部门口径为准,小四不掌握也不猜测哦。有疑问可直接咨询人事处。","官方口径(敏感问题预置回复)"],
+[/搭子|交友/,"去「找搭子」页面点一下 AI同频匹配,按专业/兴趣/来源地帮你找到同频的人;周末活动报名还+30里程。","找搭子 · AI匹配"]
+];
+var KB_DEFAULT=["这个问题超出了我的离线知识库(demo模式)。接入真实大模型后,我可以结合RAG知识库回答几乎所有院内问题。\n你可以先试试问:腕臂 / 公积金 / 班车 / 过早 / 院史。","demo兜底回复"];
+
+/* 多轮对话:追问模板 */
+var FOLLOW_MAP={
+  "公积金":["公积金提取需要哪些材料？","去哪里办理公积金？","公积金每月缴存比例是多少？"],
+  "报到":["报到需要带什么材料？","工位怎么分配？","师傅怎么安排的？"],
+  "腕臂":["平腕臂和斜腕臂有什么区别？","定位管是做什么的？","腕臂怎么安装的？"],
+  "接触网":["接触网的电压等级是多少？","接触网和供电线有什么不同？","锚段关节是干什么用的？"],
+  "班车":["徐东线经停哪些站点？","晚班末班是几点？","周末有班车吗？"],
+  "食堂":["午餐几点开始？","有哪些窗口推荐？","晚餐供应吗？"],
+  "过早":["东门热干面几点出摊？","糊汤粉是哪家的？","院区附近还有哪些早餐？"],
+  "租房":["杨园小区均价多少？","徐东到院区通勤多久？","有没有同事直租的？"],
+  "磁浮":["600公里磁浮什么时候商用？","铁四院参与哪些磁浮项目？","磁浮和传统高铁哪个成本高？"]
+};
+function getFollowUps(q){
+  for(var k in FOLLOW_MAP){if(q.indexOf(k)>=0)return FOLLOW_MAP[k];}
+  return null;
+}
+
+/* 上下文记忆 */
+var CHAT_HIST=store("chathist")||[];
+function pushHist(q,a,src){
+  CHAT_HIST.push({q:q,a:a,src:src,t:Date.now()});
+  if(CHAT_HIST.length>30)CHAT_HIST.shift();
+  store("chathist",CHAT_HIST);
+}
+
+/* ================= 状态 ================= */
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem("sihe_"+k));localStorage.setItem("sihe_"+k,JSON.stringify(v));}catch(e){return null}}
+var km=store("km")||128;
+var liked=store("liked")||{};
+var joined=store("joined")||{};
+var curCh="all",curPost=null;
+
+/* ================= 工具 ================= */
+function $(id){return document.getElementById(id)}
+var toastTimer=null;
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){e.classList.remove("show")},2000)}
+function addKm(n,why){km+=n;store("km",km);renderTicket();toast(why+"  🏅 +"+n+" 里程")}
+function openOvl(id){$(id).classList.add("show");document.body.style.overflow="hidden"}
+function closeOvl(id){$(id).classList.remove("show");document.body.style.overflow=""}
+document.querySelectorAll(".ovl").forEach(function(o){o.addEventListener("click",function(e){if(e.target===o)closeOvl(o.id)})});
+
+/* ================= 导航 ================= */
+function go(pg,el){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on")});
+  $("pg-"+pg).classList.add("on");
+  document.querySelectorAll(".tabbar .tab").forEach(function(t){t.classList.remove("on")});
+  if(el)el.classList.add("on");
+  window.scrollTo(0,0);
+}
+
+/* ================= 广场 ================= */
+var SEARCH_PH=["公积金怎么办？","腕臂是什么？","班车时刻表"];
+var _sp=0;
+function rotateSearch(){
+  _sp=(_sp+1)%SEARCH_PH.length;
+  var el=$("searchPh");
+  if(el){el.style.transition="opacity .2s";el.style.opacity=0;
+    setTimeout(function(){el.textContent="搜索："+SEARCH_PH[_sp];el.style.opacity=1;},200);}
+}
+setInterval(rotateSearch,2600);
+
+var FOLLOWED={guozao:1,baodao:1,zhuanzu:1};
+function toggleFollow(e,c){e.stopPropagation();if(c==="all")return;FOLLOWED[c]=FOLLOWED[c]?0:1;renderChips();toast(FOLLOWED[c]?("已关注「"+(CH_NAME[c]||"")+"」"):"已取消关注");}
+
+function renderChips(){
+  $("chips").innerHTML=CHANNELS.map(function(c){
+    var f=(c[0]!=="all")&&FOLLOWED[c[0]];
+    return '<span class="chip'+(curCh===c[0]?" on":"")+'" onclick="setCh(\''+c[0]+'\')">'+c[1]+
+      (f?'<i class="flw" onclick="toggleFollow(event,\''+c[0]+'\')" title="点击取消关注">已关注</i>':'')+'</span>';
+  }).join("");
+}
+function setCh(c){curCh=c;renderChips();renderFeed()}
+function renderFeed(){
+  var list=POSTS.filter(function(p){return curCh==="all"||p.ch===curCh});
+  $("feed").innerHTML=list.map(function(p){
+    var lk=liked[p.id]?p.lk+1:p.lk;
+    return '<div class="post'+(p.gf?" gf":"")+'" onclick="openPost('+p.id+')">'+
+      '<div class="cov '+p.g+'" style="height:'+p.h+'px"><span class="em" style="font-size:'+(p.h*0.38)+'px">'+p.em+'</span>'+(p.gf?'<span class="gf-badge">官方发车</span>':'')+'</div>'+
+      '<div class="tt">'+p.tt+'</div>'+
+      '<div class="mt"><span class="au"><span class="av">'+p.av+'</span>'+p.au+'</span>'+
+      '<span class="lk'+(liked[p.id]?" did":"")+'" onclick="event.stopPropagation();likePost('+p.id+')">♡ '+lk+'</span></div></div>';
+  }).join("");
+}
+function likePost(id){
+  if(liked[id]){delete liked[id]}else{liked[id]=1;km+=1;store("km",km);renderTicket()}
+  store("liked",liked);renderFeed();
+  if(curPost&&curPost.id===id)fillDetLike();
+}
+
+/* ================= 详情 ================= */
+function openPost(id){
+  var p=POSTS.find(function(x){return x.id===id});if(!p)return;
+  curPost=p;
+  $("detCov").className="det-cov "+p.g;
+  $("detEm").textContent=p.em;
+  $("detTt").textContent=p.tt;
+  $("detAv").textContent=p.av;$("detAu").textContent=p.au;
+  $("detCh").textContent=CH_NAME[p.ch]||"推荐";
+  $("detBd").innerHTML=p.bd.map(function(t){return "<p>"+t+"</p>"}).join("");
+  $("detTags").innerHTML=p.tags.map(function(t){return "<span>#"+t+"</span>"}).join("");
+  $("sumBox").classList.remove("show");
+  fillDetLike();
+  openOvl("ovl-det");
+}
+function fillDetLike(){
+  var p=curPost;var el=$("detLk");
+  el.textContent="♡ "+(liked[p.id]?p.lk+1:p.lk);
+  el.className="lk2"+(liked[p.id]?" did":"");
+}
+function likeFromDet(){likePost(curPost.id)}
+function summarize(){
+  var p=curPost;var box=$("sumBox");
+  box.innerHTML="<b>📌 小四划重点:</b>"+p.bd[0]+(p.tags?" <b>#"+p.tags[0]+"</b>":"");
+  box.classList.add("show");
+}
+
+/* ================= 我的(帖子/车队) ================= */
+function openMine(type){
+  if(type==="posts"){
+    $("mineTitle").textContent="📝 我的帖子";
+    var mine=POSTS.filter(function(p){return (p.au||"").indexOf("(我)")>=0});
+    if(!mine.length){
+      $("mineBody").innerHTML='<div class="cardx" style="text-align:center;color:var(--ink-3)">还没有发过帖<br>去广场点「＋」发一趟吧 🚄</div>';
+    }else{
+      $("mineBody").innerHTML=mine.map(function(p){
+        return '<div class="cardx" onclick="closeOvl(\'ovl-mine\');openPost('+p.id+')"><h4>'+p.em+" "+p.tt+'</h4><p>'+((p.bd&&p.bd[0])||"")+'</p></div>';
+      }).join("");
+    }
+  }else{
+    $("mineTitle").textContent="🚗 我的车队";
+    $("mineBody").innerHTML='<div class="cardx" style="text-align:center;color:var(--ink-3)">还没有车队<br>去「找搭子」发起拼车 / 组队吧 🤝</div>';
+  }
+  openOvl("ovl-mine");
+}
+
+/* ================= 活动日程(ICS) ================= */
+function addToCal(i){
+  var a=ACTS[i];
+  var parts=(a[1]||"").split(" · ");
+  var title=parts[0]||"四院活动";
+  var when=parts[1]||"";
+  var wmap={周日:0,周一:1,周二:2,周三:3,周四:4,周五:5,周六:6};
+  var wd=null,tm=when.match(/(\d{1,2}):(\d{2})/),time="09:00";
+  if(tm)time=tm[1].padStart(2,"0")+":"+tm[2];
+  for(var k in wmap){if(when.indexOf(k)>=0){wd=wmap[k];break;}}
+  var d=new Date();
+  if(wd!==null){var diff=(wd-d.getDay()+7)%7;if(diff===0)diff=7;d.setDate(d.getDate()+diff);}
+  var y=d.getFullYear(),mo=String(d.getMonth()+1).padStart(2,"0"),da=String(d.getDate()).padStart(2,"0"),dt=y+mo+da;
+  var hh=parseInt(time.split(":")[0],10),mm=time.split(":")[1];
+  var eh=(hh+2)%24;
+  var dtStart=dt+"T"+String(hh).padStart(2,"0")+mm+"00";
+  var dtEnd=dt+"T"+String(eh).padStart(2,"0")+mm+"00";
+  var ics="BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//sihe//CN\nBEGIN:VEVENT\nUID="+Date.now()+"@sihe\nSUMMARY="+title+"\nDTSTART:"+dtStart+"\nDTEND:"+dtEnd+"\nEND:VEVENT\nEND:VCALENDAR";
+  var blob=new Blob([ics],{type:"text/calendar;charset=utf-8"});
+  var url=URL.createObjectURL(blob);
+  var link=document.createElement("a");link.href=url;link.download="四合院-"+title+".ics";
+  document.body.appendChild(link);link.click();document.body.removeChild(link);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  toast("已生成日历提醒 📅 去日历添加吧");
+}
+
+/* ================= 下拉刷新 / 上拉加载 ================= */
+function refreshFeed(){
+  var el=$("ptr");if(!el)return;
+  el.textContent="↻ 刷新中…";el.classList.add("on");
+  setTimeout(function(){
+    renderFeed();
+    el.textContent="↓ 下拉刷新";el.classList.remove("on");
+    _exhausted=false;var lm=$("loadmore");if(lm){lm.textContent="上拉加载更多";lm.classList.remove("on");}
+    toast("已刷新 🔄");
+  },650);
+}
+var _loading=false,_exhausted=false;
+function loadMore(){
+  if(_loading||_exhausted)return;
+  _loading=true;
+  var el=$("loadmore");el.textContent="加载中…";el.classList.add("on");
+  setTimeout(function(){
+    el.textContent="— 已经到底啦 🏁 —";el.classList.remove("on");
+    _loading=false;_exhausted=true;
+  },650);
+}
+window.addEventListener("scroll",function(){
+  if(!$("pg-plaza")||!$("pg-plaza").classList.contains("on"))return;
+  var h=document.documentElement;
+  if(h.scrollTop+h.clientHeight>=h.scrollHeight-140)loadMore();
+});
+var _ty=0,_pulling=false;
+var _plaza=$("pg-plaza");
+if(_plaza){
+  _plaza.addEventListener("touchstart",function(e){if(window.scrollY<=0){_ty=e.touches[0].clientY;_pulling=true;}},{passive:true});
+  _plaza.addEventListener("touchmove",function(e){if(_pulling&&window.scrollY<=0){var d=e.touches[0].clientY-_ty;if(d>70){_pulling=false;refreshFeed();}}},{passive:true});
+  _plaza.addEventListener("touchend",function(){_pulling=false;},{passive:true});
+}
+
+/* ================= 小四同学 ================= */
+var chatInit=false;
+function openChat(preset){
+  openOvl("ovl-chat");
+  $("fab").classList.remove("hint");
+  if(!chatInit){
+    chatInit=true;
+    aiSay("你好呀,我是小四同学 🤖 —— 你的四院AI伙伴。\n报到流程、四电黑话、班车食堂、过早攻略…都可以问我!","小四同学自我介绍");
+  }
+  if(preset){setTimeout(function(){ask(preset)},350)}
+  $("aiMode").textContent=AI_CONFIG.endpoint?"· "+AI_CONFIG.model+" 在线":"· 离线知识库";
+}
+function bubble(cls,html){
+  var b=document.createElement("div");b.className="bub "+cls;b.innerHTML=html;
+  $("chatB").appendChild(b);$("chatB").scrollTop=$("chatB").scrollHeight;return b;
+}
+function aiSay(text,ref,src){
+  var html=text.replace(/\n/g,"<br>");
+  if(ref)html+='<span class="ref">📎 引用:'+ref+'</span>';
+  if(src)html+='<span class="src">📖 来源:'+src+'</span>';
+  bubble("a",html);
+}
+function ask(q){$("chatIn").value=q;sendChat()}
+function sendChat(){
+  var q=$("chatIn").value.trim();if(!q)return;
+  $("chatIn").value="";
+  bubble("u",q.replace(/</g,"&lt;"));
+  var t=bubble("a typing","小四正在翻知识库…");
+  if(AI_CONFIG.endpoint){
+    /* 真实大模型通道:后端代理 → claude API(密钥不出后端) */
+    fetch(AI_CONFIG.endpoint,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:AI_CONFIG.model,question:q})})
+    .then(function(r){return r.json()})
+    .then(function(d){t.remove();aiSay(d.answer||"(空回复)",d.ref||"大模型实时回答")})
+    .catch(function(){t.remove();answerLocal(q,"(网络异常,已切离线兜底)")});
+  }else{
+    setTimeout(function(){t.remove();answerLocal(q)},650);
+  }
+}
+function answerLocal(q,note){
+  var hit=null, kbIdx=-1;
+  for(var i=0;i<KB.length;i++){if(KB[i][0].test(q)){hit=KB[i];kbIdx=i;break}}
+  if(hit){
+    var srcs={0:["四电黑话词典 · 接触网篇 §2"],1:["四电黑话词典 · 接触网篇 §1"],2:["新员工报到手册(待院方核实)"],
+      3:["生活服务卡片(demo示例·待院方核实)"],4:["生活服务卡片(demo示例·待院方核实)"],
+      5:["广场·过早了冇频道"],6:["新员工报到手册(待院方核实)"],7:["官方发车 · 新华网报道"],
+      8:["四电黑话词典 · 智能运维篇"],9:["时光专列 · 院史时间轴"],10:["广场·转租拼车频道"],
+      11:["官方口径(敏感问题预置回复)"],12:["找搭子 · AI匹配"]};
+    var src=srcs[kbIdx]?srcs[kbIdx][0]:hit[2];
+    aiSay(hit[1]+(note?"\n"+note:""),hit[2],src);
+    pushHist(q,hit[1],src);
+    renderFollowUps(q);
+    renderHistHint();
+  }else{
+    aiSay(KB_DEFAULT[0]+(note?"\n"+note:""),KB_DEFAULT[1]);
+  }
+}
+
+function renderFollowUps(q){
+  var fu=getFollowUps(q);
+  var el=document.getElementById("followQ");if(!el)return;
+  if(fu&&fu.length){
+    el.innerHTML='<span>💡 继续问:</span>'+fu.map(function(t,i){return '<button onclick="ask(\''+t.replace(/'/g,"\\'")+'\')">'+t+'</button>';}).join("");
+    el.style.display="flex";
+  }else{
+    el.style.display="none";
+  }
+}
+function renderHistHint(){
+  var el=document.getElementById("histHint");if(!el)return;
+  if(CHAT_HIST.length>0){
+    el.style.display="flex";
+  }else{
+    el.style.display="none";
+  }
+}
+function clearChatHist(){
+  CHAT_HIST=[];store("chathist",[]);
+  $("chatB").innerHTML="";chatInit=false;openChat();
+  $("histHint").style.display="none";
+}
+
+/* ================= 充电站 ================= */
+var bizExpanded=false;
+function renderBiz(){
+  var list=bizExpanded?BIZ:BIZ.slice(0,4);
+  var html='<div class="biz-grid">'+list.map(function(b){
+    var d=BIZ_DETAIL[b[1]]; var g=d?d.color:"g1";
+    return '<div class="biz-card '+g+'" data-title="'+b[1]+'">'+'<div class="biz-emoji">'+b[0]+'</div>'+'<div class="biz-name">'+b[1]+'</div>'+'<div class="biz-brief">'+b[2]+'</div>'+'<div class="biz-more">点击查看 ›</div>'+'</div>';
+  }).join('')+'</div>';
+  $("biz").innerHTML=html;
+  $("biz").querySelectorAll(".biz-card").forEach(function(card){
+    card.addEventListener("click",function(){ openBizConcept(card.getAttribute("data-title")); });
+  });
+  updateBizToggle();
+}
+function openBizConcept(t){
+  var d=BIZ_DETAIL[t]; if(!d)return;
+  var em="💡"; BIZ.forEach(function(b){if(b[1]===t)em=b[0];});
+  $("bizModalIcon").textContent=em;
+  $("bizModalTitle").textContent=d.title;
+  $("bizModalSub").textContent=d.subtitle;
+  $("bizModalBody").innerHTML='<div class="biz-modal-desc">'+d.desc.replace(/\n/g,"<br>")+'</div><div class="biz-modal-tags">'+d.tags.map(function(x){return '<span class="biz-modal-tag">'+x+'</span>';}).join("")+'</div>';
+  openOvl("ovl-biz");
+}
+function bizToggle(){
+  bizExpanded=!bizExpanded;
+  renderBiz();
+}
+function updateBizToggle(){
+  var el=$("bizToggle");if(!el)return;
+  if(bizExpanded){
+    el.innerHTML='收起 ›';
+  }else{
+    el.innerHTML='更多 ›';
+  }
+}
+
+function renderDanmu(){
+  var lanes=[[],[],[]];
+  DICT.forEach(function(d,i){ lanes[i%3].push([i,d[0]]); });
+  var dur=[26,32,29];
+  $("danmu").innerHTML=lanes.map(function(ln,li){
+    var items=ln.map(function(p){
+      return '<span class="wd" onclick="askDict('+p[0]+')">'+p[1]+'<span class="q">?</span></span>';
+    }).join("");
+    return '<div class="dm-lane"><div class="dm-track" style="animation-duration:'+dur[li]+'s">'+items+items+'</div></div>';
+  }).join("");
+}
+function renderCharge(){
+  renderDanmu();
+  renderBiz();
+}
+function askDict(i){
+  openChat();
+  setTimeout(function(){
+    bubble("u",DICT[i][0]+"是什么?");
+    setTimeout(function(){aiSay(DICT[i][1],"四院黑话词典 · "+DICT[i][0])},450);
+  },350);
+}
+function skillPath(job){
+  openChat();
+  setTimeout(function(){
+    bubble("u","我是"+job+"岗位新人,帮我规划成长路径");
+    var t=bubble("a typing","小四正在按你的岗位生成路径…");
+    setTimeout(function(){
+      t.remove();
+      var paths={
+        "接触网设计":"【7天】认全腕臂三件套+平面图图例;跟师傅上道1次\n【30天】独立标注锚段/拉出值;完成第一张校核图\n【90天】参与一个区段的接触网平面设计,黑话词典全通关",
+        "牵引供电":"【7天】搞懂27.5kV从哪来到哪去;认识牵引变电所主接线\n【30天】掌握负荷计算基础;跟一次送电作业\n【90天】独立完成变电所选址比选初稿",
+        "通信":"【7天】了解铁路通信网架构(传输/调度/无线)\n【30天】掌握GSM-R/5G-R基础;参与一次联调\n【90天】独立负责一个车站的通信设计校核",
+        "信号":"【7天】搞懂联锁/闭塞的基本逻辑\n【30天】读懂信号平面布置图;学习CTCS分级\n【90天】参与联锁数据校核,理解\"千军万马不追尾\"的底层逻辑"
+      };
+      aiSay("为你生成 "+job+" 岗位 7/30/90 天路径:\n\n"+paths[job]+"\n\n(接入真实大模型后,可结合你的来源城市与项目安排进一步个性化)","新人技能地图 · "+job);
+    },900);
+  },350);
+}
+
+/* ================= 找搭子 ================= */
+function matchBuddies(){
+  var box=$("mates");
+  box.innerHTML='<div class="cardx" style="text-align:center;color:var(--ink-3)">✨ AI 正在按 专业/兴趣/来源地/同期 四个维度匹配…</div>';
+  setTimeout(function(){
+    box.innerHTML=MATES.map(function(m,i){
+      return '<div class="mate" style="animation-delay:'+(i*0.12)+'s"><span class="av">'+m[0]+'</span>'+
+        '<div class="inf"><div class="nm">'+m[1]+'</div><div class="cm">共同点</div><div class="cm-tags">'+m[2].split(" · ").map(function(t){return '<span class="cm-tag">'+t+'</span>';}).join("")+'</div></div>'+
+        '<span class="pc">'+m[3]+'</span></div>';
+    }).join("")+'<div style="font-size:11px;color:var(--ink-3);text-align:center;padding:4px 0 8px">demo为模拟匹配 · 正式版由大模型基于报名问卷生成</div>';
+    toast("为你找到 3 位同频搭子 ✨");
+  },900);
+}
+function renderActs(){
+  $("acts").innerHTML=ACTS.map(function(a,i){
+    var did=joined[i];
+    return '<div class="act"><span style="font-size:24px">'+a[0]+'</span><div class="inf"><div class="nm">'+a[1]+'</div><div class="ds">'+a[2]+'</div></div>'+
+      '<button class="'+(did?"did":"")+'" onclick="joinAct('+i+',this)">'+(did?"已上车":"上车")+'</button>'+
+      (did?'<button class="cal" onclick="addToCal('+i+')">📅 加入日程</button>':'')+'</div>';
+  }).join("");
+}
+function joinAct(i,btn){
+  if(joined[i]){toast("已经在车上啦 🚄");return}
+  joined[i]=1;store("joined",joined);
+  btn.classList.add("did");btn.textContent="已上车";
+  var cal=document.createElement("button");
+  cal.className="cal";cal.textContent="📅 加入日程";cal.onclick=function(){addToCal(i)};
+  btn.parentNode.insertBefore(cal,btn.nextSibling);
+  addKm(30,"报名成功,周末见!");
+}
+
+/* ===== 好物集市 ===== */
+var goodsRendered=false;
+function renderGoods(){
+  if(goodsRendered)return;
+  $("goods").innerHTML=GOODS.map(function(g,i){
+    return '<div class="good"><div class="g-cover">'+g[0]+'</div>'+
+      '<div class="g-body"><div class="g-tt">'+g[1]+'</div>'+
+      '<div class="g-price">'+g[2]+'</div>'+
+      '<div class="g-owner">'+g[3]+'</div>'+
+      '<div class="g-ds">'+g[4]+'</div>'+
+      '<button class="g-want" onclick="wantGoods('+i+',this)">想要</button></div></div>';
+  }).join("");
+  goodsRendered=true;
+}
+function wantGoods(i,btn){
+  if(btn.dataset.done)return;
+  btn.dataset.done=1;btn.textContent="已留言";btn.style.background="var(--ink-3)";
+  toast("已给「"+GOODS[i][3]+"」留言:想要 "+GOODS[i][1]+" 🛍️");
+}
+function switchBuddyTab(t){
+  var mate=t==='mate';
+  $("bt0").classList.toggle("on",mate);
+  $("bt1").classList.toggle("on",!mate);
+  $("buddyMate").style.display=mate?"":"none";
+  $("buddyMarket").style.display=mate?"none":"";
+  if(!mate)renderGoods();
+}
+
+/* ================= 我的车票 ================= */
+var JOIN_DATE=new Date(2026,6,1); /* 2026-07-01 入职(demo) */
+function renderTicket(){
+  var days=Math.max(1,Math.floor((Date.now()-JOIN_DATE.getTime())/86400000)+1);
+  $("tkDays").textContent=days;
+  $("workDays").textContent=days;
+  $("tkKm").textContent=km+" km";
+  $("tkBdg").textContent=(3+Object.keys(joined).length)+" 枚";
+}
+
+/* ================= 海报(Canvas) ================= */
+function makePoster(){
+  openOvl("ovl-poster");
+  var cv=$("posterCv"),c=cv.getContext("2d");
+  var W=600,H=900;
+  var g=c.createLinearGradient(0,0,W,H);
+  g.addColorStop(0,"#0C7A55");g.addColorStop(1,"#063D2B");
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+  /* 装饰圆 */
+  c.fillStyle="rgba(255,255,255,.07)";
+  c.beginPath();c.arc(520,90,150,0,7);c.fill();
+  c.beginPath();c.arc(60,820,120,0,7);c.fill();
+  /* 顶部标识 */
+  c.fillStyle="rgba(255,255,255,.85)";c.font="26px sans-serif";
+  c.fillText("🚄 四合院 · 入职纪念",40,70);
+  /* 虚线轨道 */
+  c.strokeStyle="rgba(255,255,255,.5)";c.lineWidth=3;c.setLineDash([14,10]);
+  c.beginPath();c.moveTo(40,180);c.lineTo(560,180);c.stroke();c.setLineDash([]);
+  /* 主标题 */
+  c.fillStyle="#fff";c.font="bold 58px sans-serif";
+  c.fillText("欢迎上车",40,290);
+
+  c.font="bold 40px sans-serif";c.fillStyle="#F4D88A";
+  c.fillText("新人站 → 四院人",40,360);
+  /* 数据 */
+  var days=$("tkDays").textContent;
+  c.font="24px sans-serif";c.fillStyle="rgba(255,255,255,.92)";
+  c.fillText("车票号:SHY-2026-0701",40,450);
+  c.fillText("入职天数:"+days+" 天",40,495);
+  c.fillText("成长里程:"+km+" km",40,540);
+  /* 语录 */
+  c.font="italic 26px sans-serif";c.fillStyle="rgba(255,255,255,.95)";
+  c.fillText("从武广的350,到磁浮的600,",60,650);
+  c.fillText("  中国速度的下一棒,在你手里。",60,692);
+  /* 底部 */
+  c.strokeStyle="rgba(255,255,255,.5)";c.lineWidth=3;c.setLineDash([14,10]);
+  c.beginPath();c.moveTo(40,780);c.lineTo(560,780);c.stroke();c.setLineDash([]);
+  c.font="20px sans-serif";c.fillStyle="rgba(255,255,255,.75)";
+  c.fillText("铁四院 · 电化院 | 链接每一个四院人",40,830);
+  c.fillText("AI generated · "+new Date().toISOString().slice(0,10),40,862);
+  toast("海报已生成 🎨");
+}
+
+/* ================= 发一趟 ================= */
+var PUB_EMS=[["🍜","g2"],["⚡","g1"],["🏠","g4"],["🌸","g5"],["🚄","g3"],["📚","g6"],["🎉","g7"],["🏗️","g8"]];
+var pubEm=0,pubCh="baodao";
+/* AI文案模板:按 封面+频道 生成 */
+var AI_TPL={
+  "🍜":["这家的味道,值得电化院总动员","实测不踩雷:分量足、味道正,过早人冲就完了。","坐标已定位,评论区蹲一个饭搭子。"],
+  "⚡":["今天离27.5kV最近的一次","上道见学,亲眼看到课本里的结构立在眼前,震撼比图纸直观一百倍。","新人小结:先认结构,再看参数,最后聊设计。"],
+  "🏠":["安家进度+1,武汉越来越像家了","房子收拾好的那一刻,漂泊感清零。","经验帖整理中,需要清单的同事评论区举手。"],
+  "🌸":["新人日记:今天也在努力融入四院","从陌生到熟悉,每天都有一点点进步。","同期们,一起加油!"],
+  "🚄":["中国速度,亲眼见证的那种","站在工程现场,才懂\"大国重器\"四个字的分量。","为四院人骄傲的一天。"],
+  "📚":["师傅说:图纸会骗人,规范不会","今日学习打卡,知识点已入库。","配合充电站黑话词典食用更佳。"],
+  "🎉":["今天的快乐由工会承包","活动现场氛围拉满,认识了好几个同频的伙伴。","下次活动,找搭子页面见!"],
+  "🏗️":["工地见闻:每一根支柱都有故事","现场跑一天,比坐一周办公室学得多。","致敬每一位坚守现场的前辈。"]
+};
+function openPub(){
+  openOvl("ovl-pub");
+  $("emPick").innerHTML=PUB_EMS.map(function(e,i){
+    return '<span class="e '+e[1]+(i===pubEm?" on":"")+'" onclick="pickEm('+i+')">'+e[0]+'</span>';
+  }).join("");
+  $('chPick').innerHTML=CHANNELS.slice(1,7).map(function(c){
+    return '<span class="c'+(pubCh===c[0]?' on':'')+'" onclick="pickCh(\''+c[0]+'\')">'+c[1]+'</span>';
+  }).join('');
+}
+function pickEm(i){pubEm=i;openPub()}
+function pickCh(c){pubCh=c;openPub()}
+function aiCompose(){
+  var em=PUB_EMS[pubEm][0];
+  var tpl=AI_TPL[em]||AI_TPL["🌸"];
+  $("pubTt").value=tpl[0];
+  $("pubBd").value=tpl[1]+"\n"+tpl[2]+"\n\n#"+(CH_NAME[pubCh]||"新人报到")+" #四合院 #AI帮我写的";
+  toast("AI 已识别封面并生成文案 ✨");
+}
+function publish(){
+  var tt=$("pubTt").value.trim(),bd=$("pubBd").value.trim();
+  if(!tt){toast("先给这趟车起个名字吧");return}
+  var e=PUB_EMS[pubEm];
+  if(pubCh==='haowu'){
+    GOODS.unshift([e[0],tt,bd||'面议',"武小新 · 四院新人","好物发布","闲置"]);
+    toast("好物已挂上集市 🚄");
+    goodsRendered=false;
+    renderGoods&&renderGoods();
+  }else{
+    POSTS.unshift({id:Date.now(),ch:pubCh,em:e[0],g:e[1],h:100,tt:tt,au:"武小新(我)",av:"🐣",lk:0,
+      bd:bd?bd.split("\n").filter(Boolean):["(这趟车空载发出)"],tags:[CH_NAME[pubCh]||"新人报到","我的第一帖"]});
+    curCh=pubCh==="guanfang"?"all":pubCh;
+    renderChips();renderFeed();
+    go("plaza",document.querySelector('.tab[data-pg="plaza"]'));
+  }
+  $('pubTt').value='';$('pubBd').value='';
+  closeOvl('ovl-pub');
+  addKm(10,"发车成功 🚄");
+}
+
+/* ================= 时钟 ================= */
+function tick(){
+  var n=new Date(),s=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+  ["clock","clock2","clock3","clock4"].forEach(function(id){var e=$(id);if(e)e.textContent=s});
+}
+tick();setInterval(tick,30000);
+
+/* ================= FAB 自适应位置 ================= */
+function fabPos(){
+  var f=document.querySelector(".frame").getBoundingClientRect();
+  $("fab").style.right=Math.max(14,(window.innerWidth-f.right)+14)+"px";
+}
+window.addEventListener("resize",fabPos);
+
+/* ================= 启动 ================= */
+renderChips();renderFeed();renderCharge();renderActs();renderTicket();fabPos();
+setTimeout(function(){$("fab").classList.remove("hint")},4000);
+</script>
+</body>
+</html>
