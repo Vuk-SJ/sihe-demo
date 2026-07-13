@@ -43,9 +43,8 @@ body{display:flex;justify-content:center;min-height:100vh}
 @keyframes pin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
 /* 顶部 */
-.top{position:sticky;top:0;z-index:30;background:#fff;padding:10px 14px 0;
+.top{position:sticky;top:0;z-index:30;background:#fff;padding:18px 14px 0;
   box-shadow:0 1px 0 var(--line),0 6px 18px rgba(40,20,80,.04)}
-.statusbar{display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--ink-2);padding:2px 4px 8px}
 .searchbar{display:flex;align-items:center;gap:8px;background:#F4F2F8;border:1px solid #ECEAF1;
   border-radius:999px;padding:9px 14px;font-size:13px;color:var(--ink-3);cursor:pointer;transition:.2s}
 .searchbar:active{background:#EDEAF5}
@@ -114,7 +113,7 @@ body{display:flex;justify-content:center;min-height:100vh}
 /* 通用块 */
 .pad{padding:14px}
 .hero-mini{background:var(--grad);color:#fff;border-radius:22px;
-  padding:20px;margin:0 14px 14px;position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(123,97,255,.28)}
+  padding:20px;margin:12px 14px 14px;position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(123,97,255,.28)}
 .hero-mini::after{content:"";position:absolute;top:-70px;right:-50px;width:180px;height:180px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%)}
 .hero-mini h2{font-size:20px;margin-bottom:5px;letter-spacing:.01em}
@@ -139,14 +138,18 @@ body{display:flex;justify-content:center;min-height:100vh}
 .tl li b{color:var(--green-2);margin-right:6px;font-variant-numeric:tabular-nums}
 .tl li .hl{color:var(--ink);font-weight:700}
 
-/* 词典 */
-.danmu{display:flex;flex-direction:column;gap:8px;overflow:hidden;height:120px;background:linear-gradient(135deg,#F3EEFF,#FFEFF6);border:1px solid #F1EAF8;border-radius:16px;padding:10px 0}
-.dm-lane{overflow:hidden;white-space:nowrap}
-.dm-track{display:inline-flex;gap:10px;padding-left:12px;will-change:transform;animation:dmScroll linear infinite}
+/* 词典 · 黑话弹幕 */
+.danmu{display:flex;flex-direction:column;justify-content:center;gap:10px;overflow:hidden;height:132px;
+  background:linear-gradient(135deg,#F3EEFF,#FFEFF6);border:1px solid #F1EAF8;border-radius:16px;padding:0;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.dm-lane{overflow:hidden;white-space:nowrap;line-height:0}
+.dm-track{display:inline-flex;padding-left:0;will-change:transform;animation:dmScroll linear infinite}
 .danmu:hover .dm-track{animation-play-state:paused}
-@keyframes dmScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.wd{background:#fff;border:1px solid #F1EAF8;border-radius:999px;padding:7px 15px;font-size:13px;
-  font-weight:700;cursor:pointer;transition:.15s;box-shadow:var(--sh-sm)}
+@keyframes dmScroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+.wd{display:inline-flex;align-items:center;flex:0 0 auto;margin-right:10px;background:#fff;
+  border:1px solid #F1EAF8;border-radius:999px;padding:7px 15px;font-size:13px;font-weight:700;
+  line-height:1.2;white-space:nowrap;cursor:pointer;transition:.15s;box-shadow:var(--sh-sm)}
 .wd:active{transform:scale(.94);background:var(--green-soft)}
 .wd .q{color:var(--copper);font-size:11px;margin-left:3px;font-weight:800}
 
@@ -187,7 +190,7 @@ body{display:flex;justify-content:center;min-height:100vh}
 .act .cal{margin-left:0}
 
 /* 找搭子 子标签(分段控件) */
-.btabs{display:flex;gap:6px;padding:8px 14px 4px}
+.btabs{display:flex;gap:6px;padding:16px 14px 4px}
 .btab{position:relative;flex:1;text-align:center;padding:9px 2px;font-size:15px;font-weight:800;color:var(--ink-3);cursor:pointer;
   background:#fff;border:1px solid #F1EFF6;border-radius:12px;transition:.18s;box-shadow:var(--sh-sm)}
 .btab.on{color:#fff;background:var(--grad);border-color:transparent;box-shadow:0 4px 12px rgba(123,97,255,.3)}
@@ -206,7 +209,7 @@ body{display:flex;justify-content:center;min-height:100vh}
 
 /* 车票页 */
 /* ===== 车票样式（双联票）===== */
-.ticket{margin:8px 8px 12px;background:linear-gradient(135deg,#7B61FF 0%,#FF5E9C 100%);
+.ticket{margin:12px 8px 12px;background:linear-gradient(135deg,#7B61FF 0%,#FF5E9C 100%);
   border-radius:18px;color:#fff;position:relative;overflow:hidden;
   box-shadow:0 12px 30px rgba(123,97,255,.3);
   display:flex;align-items:stretch;padding:0;flex-wrap:nowrap}
@@ -252,6 +255,14 @@ body{display:flex;justify-content:center;min-height:100vh}
 .mi .arr{margin-left:auto;color:var(--ink-3);font-size:16px}
 .mi .bdg{margin-left:auto;font-size:11px;background:var(--grad-gold);color:#fff;font-weight:800;
   padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(255,160,40,.3)}
+
+/* 车票页 · 成长数据(里程/徽章) */
+.tk-stats{display:flex;gap:12px;margin:0 14px 14px}
+.tk-stat{flex:1;background:var(--card);border:1px solid #F1EFF6;border-radius:16px;
+  padding:14px 16px;display:flex;flex-direction:column;gap:3px;box-shadow:var(--sh-sm)}
+.tk-stat-n{font-size:20px;font-weight:800;line-height:1.2;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tk-stat-l{font-size:11.5px;color:var(--ink-3)}
 
 /* 覆盖层(聊天/详情/发布/海报) */
 .ovl{position:fixed;inset:0;z-index:100;display:none;justify-content:center;background:rgba(20,12,40,.5);
@@ -392,9 +403,8 @@ body{display:flex;justify-content:center;min-height:100vh}
 <div class="frame">
 
 <!-- ================= 广场 ================= -->
-<div class="page" id="pg-plaza">
+<div class="page on" id="pg-plaza">
   <div class="top">
-    <div class="statusbar"><span id="clock">9:41</span><span>🚄 四合院</span><span>●●●</span></div>
     <div class="searchbar" onclick="openChat(SEARCH_PH[_sp])">
       <span>🔍</span><span id="searchPh">搜索：公积金怎么办？</span><span class="ask">问小四 ›</span>
     </div>
@@ -407,7 +417,6 @@ body{display:flex;justify-content:center;min-height:100vh}
 
 <!-- ================= 充电站 ================= -->
 <div class="page" id="pg-charge">
-  <div class="top"><div class="statusbar"><span id="clock2">9:41</span><span>🔌 充电站</span><span>●●●</span></div></div>
   <div class="hero-mini">
     <h2>充电站 ⚡</h2>
     <p>学习充电 × 牵引供电 —— 新人从这里接入 27.5kV 的四院能量</p>
@@ -451,9 +460,6 @@ body{display:flex;justify-content:center;min-height:100vh}
 
 <!-- ================= 找搭子 ================= -->
 <div class="page" id="pg-buddy">
-  <div class="top"><div class="statusbar"><span id="clock3">9:41</span><span>🤝 邻里</span><span>●●●</span></div></div>
-
-
   <div class="btabs">
     <div class="btab on" id="bt0" onclick="switchBuddyTab('mate')">找搭子</div>
     <div class="btab" id="bt1" onclick="switchBuddyTab('market')">好物集市</div>
@@ -488,8 +494,7 @@ body{display:flex;justify-content:center;min-height:100vh}
 </div>
 
 <!-- ================= 我的车票 ================= -->
-<div class="page on" id="pg-ticket">
-  <div class="top"><div class="statusbar"><span id="clock4">9:41</span><span>🏡 我的小院</span><span>●●●</span></div></div>
+<div class="page" id="pg-ticket">
   <div class="ticket">
     <!-- 左侧：持票人 -->
     <div class="tk-left">
@@ -520,6 +525,11 @@ body{display:flex;justify-content:center;min-height:100vh}
     </div>
   </div>
 
+  <div class="tk-stats">
+    <div class="tk-stat"><span class="tk-stat-n" id="tkKm">0 km</span><span class="tk-stat-l">成长里程</span></div>
+    <div class="tk-stat"><span class="tk-stat-n" id="tkBdg">3 枚</span><span class="tk-stat-l">成就徽章</span></div>
+  </div>
+
   <div class="menu">
     <div class="mi" onclick="makePoster()">🎨 AI 生成入职纪念海报 <span class="bdg">AI</span></div>
     <div class="mi" onclick="toast('收藏夹还空着,去广场逛逛吧')">⭐ 我的收藏 <span class="arr">›</span></div>
@@ -539,11 +549,11 @@ body{display:flex;justify-content:center;min-height:100vh}
 
 <!-- 底部 Tab -->
 <nav class="tabbar">
-  <div class="tab" data-pg="plaza" onclick="go('plaza',this)"><span class="i">🏛️</span>广场</div>
+  <div class="tab on" data-pg="plaza" onclick="go('plaza',this)"><span class="i">🏛️</span>广场</div>
   <div class="tab" data-pg="charge" onclick="go('charge',this)"><span class="i">🔌</span>充电站</div>
   <div class="tab" onclick="openPub()"><span class="plus">＋</span>发一趟</div>
   <div class="tab" data-pg="buddy" onclick="go('buddy',this)"><span class="i">🤝</span>邻里</div>
-  <div class="tab on" data-pg="ticket" onclick="go('ticket',this)"><span class="i">🏡</span>我的小院</div>
+  <div class="tab" data-pg="ticket" onclick="go('ticket',this)"><span class="i">🏡</span>我的小院</div>
 </nav>
 
 </div><!-- /frame -->
@@ -1275,10 +1285,10 @@ function switchBuddyTab(t){
 var JOIN_DATE=new Date(2026,6,1); /* 2026-07-01 入职(demo) */
 function renderTicket(){
   var days=Math.max(1,Math.floor((Date.now()-JOIN_DATE.getTime())/86400000)+1);
-  $("tkDays").textContent=days;
-  $("workDays").textContent=days;
-  $("tkKm").textContent=km+" km";
-  $("tkBdg").textContent=(3+Object.keys(joined).length)+" 枚";
+  if($("tkDays"))$("tkDays").textContent=days;
+  if($("workDays"))$("workDays").textContent=days;
+  if($("tkKm"))$("tkKm").textContent=km+" km";
+  if($("tkBdg"))$("tkBdg").textContent=(3+Object.keys(joined).length)+" 枚";
 }
 
 /* ================= 海报(Canvas) ================= */
