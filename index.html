@@ -143,12 +143,12 @@ body{display:flex;justify-content:center;min-height:100vh}
   background:linear-gradient(135deg,#F3EEFF,#FFEFF6);border:1px solid #F1EAF8;border-radius:16px;padding:0;
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
-.dm-lane{overflow:hidden;white-space:nowrap;line-height:0}
-.dm-track{display:inline-flex;padding-left:0;will-change:transform;animation:dmScroll linear infinite}
+.dm-lane{display:flex;align-items:center;overflow:hidden;white-space:nowrap}
+.dm-track{display:inline-flex;flex:0 0 auto;padding-left:0;will-change:transform;animation:dmScroll linear infinite}
 .danmu:hover .dm-track{animation-play-state:paused}
 @keyframes dmScroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 .wd{display:inline-flex;align-items:center;flex:0 0 auto;margin-right:10px;background:#fff;
-  border:1px solid #F1EAF8;border-radius:999px;padding:7px 15px;font-size:13px;font-weight:700;
+  border:1px solid #F1EAF8;border-radius:999px;padding:5px 15px;font-size:13px;font-weight:700;
   line-height:1.2;white-space:nowrap;cursor:pointer;transition:.15s;box-shadow:var(--sh-sm)}
 .wd:active{transform:scale(.94);background:var(--green-soft)}
 .wd .q{color:var(--copper);font-size:11px;margin-left:3px;font-weight:800}
@@ -767,8 +767,8 @@ var DICT=[
 ];
 
 var BIZ=[
-["🧲","600km/h 高速磁浮","下一代\"中国速度\",铁四院深度参与建造关键技术攻关。"],
-["🚈","智轨","无钢轨的虚拟轨道交通,全国首条示范线/商业运营线出自四院。"],
+["🌿","零碳园区","园区碳排放降至近零,绿电直连+储能+数字化碳管理。"],
+["🚝","绿智快线","兼具轨道服务水平与公交低成本,城市非核心廊道新方案。"],
 ["🏭","智能牵引变电所","无人值守+智能监控,变电所学会了\"自己照顾自己\"。待院方核实补充。"],
 ["🌱","新能源","光伏+铁路、再生制动能量回收、储能……让高铁跑得更\"绿\"。待院方核实补充。"],
 ["🧠","数智化事业部","500+人团队:智能勘察—设计—建造—运维全链条。"],
@@ -780,7 +780,9 @@ var BIZ=[
 ["🏗️","装配式铁路站房","工厂预制+现场拼装,铁路建筑的工业化革命。待院方核实。"],
 ["🌊","水下隧道","琼州海峡、渤海海峡……跨越天堑的超级工程。待院方核实。"],
 ["🌐","海外工程咨询","一带一路铁路设计输出,四院出海的尖兵。待院方核实。"],
-["🏙️","TOD综合开发","站城一体化,铁路+地产的综合开发新模式。待院方核实。"]
+["🏙️","TOD综合开发","站城一体化,铁路+地产的综合开发新模式。待院方核实。"],
+["🧲","600km/h 高速磁浮","下一代\"中国速度\",铁四院深度参与建造关键技术攻关。"],
+["🚈","智轨","无钢轨的虚拟轨道交通,全国首条示范线/商业运营线出自四院。"]
 ];
 
 var BIZ_DETAIL={
@@ -824,8 +826,14 @@ var BIZ_DETAIL={
  desc:"铁四院积极响应一带一路倡议,承担印尼雅万高铁、中老铁路、匈塞铁路等海外项目的工程咨询与设计。\n\n将中国高铁技术标准、建设经验输出海外,是铁四院国际化的尖兵业务。",
  tags:["一带一路","海外工程","雅万高铁","中老铁路","国际化"]},
 "TOD综合开发":{title:"TOD综合开发",subtitle:"站城一体化新模式",color:"g5",
- desc:"TOD(Transit-Oriented Development)是以公共交通为导向的城市开发模式,围绕铁路站点打造集交通、商业、办公、居住于一体的综合社区。\n\n铁四院积极探索铁路+地产的综合开发模式,推动铁路从单一交通功能向城市活力节点转型。",
- tags:["TOD","站城一体","综合开发","铁路+地产"]}
+  desc:"TOD(Transit-Oriented Development)是以公共交通为导向的城市开发模式,围绕铁路站点打造集交通、商业、办公、居住于一体的综合社区。\n\n铁四院积极探索铁路+地产的综合开发模式,推动铁路从单一交通功能向城市活力节点转型。",
+  tags:["TOD","站城一体","综合开发","铁路+地产"]},
+"零碳园区":{title:"零碳园区",subtitle:"园区碳排放降至近零",color:"g8",
+  desc:"零碳园区是指通过规划、设计、技术、管理等方式,使园区内生产生活活动产生的二氧化碳排放降至\"近零\"水平,并具备进一步达到\"净零\"条件的园区。2025年6月,国家发改委、工信部、国家能源局联合发布《关于开展零碳园区建设的通知》,以\"单位能耗碳排放\"为核心指标,系统部署零碳园区建设。\n\n建设路径包括:绿电直连——铺设光伏、接入风电、配套储能,将清洁能源转化为稳定电力;节能降碳——升级高耗能设备、优化建筑与能源协同;资源循环——健全废弃物循环利用网络;数字化碳管理——依托平台实时监测碳的生成与消减。\n\n铁四院可结合铁路站场、TOD综合开发等优势,打造零碳铁路基地、零碳物流园区,推动轨道交通从\"用电大户\"走向\"绿色能量单元\"。",
+  tags:["零碳园区","近零排放","绿电直连","光伏储能","数字化碳管理"]},
+"绿智快线":{title:"绿智快线",subtitle:"绿色智能的新一代中运量交通",color:"g3",
+  desc:"绿智快线系统兼具轨道交通服务水平与地面公交低成本优势,为城市非核心交通廊道交通系统提供了一种新的绿色智能解决方案。\n\n它主要服务城市副中心、新城组团、产业园区等非核心交通廊道,在运能、准点率与舒适性上对标轨道交通,而在建设成本与周期上保留地面公交的轻盈,有效填补地铁与常规公交之间的中运量运力空白。\n\n作为绿色智能的新一代中运量交通,绿智快线为城市构建多层次、低碳化的公共交通网络提供了新思路。",
+  tags:["绿智快线","绿色智能","中运量","非核心廊道","低碳交通"]}
 };
 
 var ACTS=[
